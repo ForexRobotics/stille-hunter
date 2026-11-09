@@ -1,3 +1,5 @@
+<img src="docs/icon.png" alt="stille-hunter" width="96" align="right" />
+
 # stille-hunter
 
 Plant realistic fake user records as **leak canaries**, then watch for them
@@ -92,6 +94,8 @@ stille-hunter is an experiment in building and maintaining an OSS project that
 is human-directed, AI-built. The direction, design decisions and review are
 human; the implementation is written with AI assistance. This is not an
 endorsement or an official Anthropic project.
+
+![Human-directed, AI-built](docs/human-directed-ai-built.svg)
 
 ## License
 

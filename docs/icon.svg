@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="stille-hunter icon: a small perched bird silhouette">
+  <!-- Black circle background -->
+  <circle cx="256" cy="256" r="256" fill="#0d1117"/>
+
+  <!-- White bird silhouette, built from simple rounded forms: a plump little
+       bird perched in profile, facing right. Original design, quiet and still
+       (Stille = "silence"). -->
+  <g fill="#ffffff">
+    <!-- tail: tapering wedge to the lower-left, tucked under the body -->
+    <path d="M168 288 L88 312 L112 340 L182 322 Z"/>
+    <!-- rounded body -->
+    <ellipse cx="246" cy="262" rx="102" ry="90"/>
+    <!-- head, overlapping the body up-right -->
+    <circle cx="322" cy="202" r="56"/>
+    <!-- beak: short triangle pointing right -->
+    <path d="M372 194 L414 206 L372 222 Z"/>
+  </g>
+
+  <!-- perch line under the bird -->
+  <rect x="126" y="366" width="250" height="11" rx="5.5" fill="#ffffff" opacity="0.5"/>
+</svg>

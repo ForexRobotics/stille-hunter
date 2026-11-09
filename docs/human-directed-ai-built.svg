@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2000 1180" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif" role="img" aria-label="Human-directed, AI-built — how stille-hunter is developed">
+  <defs>
+    <linearGradient id="banner" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1b2540"/>
+      <stop offset="1" stop-color="#0f1830"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="0" y="0" width="2000" height="1180" fill="#f3f5f9"/>
+
+  <!-- header -->
+  <text x="112" y="118" font-size="30" font-weight="700" letter-spacing="4" fill="#3457d5">OSS PROJECT CONCEPT</text>
+  <text x="108" y="214" font-size="90" font-weight="800" fill="#0f1830">Human-directed, <tspan fill="#3457d5">AI-built</tspan>.</text>
+  <text x="112" y="286" font-size="33" fill="#55617a">stille-hunter is an experiment in running an open-source project this way: a person sets the goals, makes</text>
+  <text x="112" y="330" font-size="33" fill="#55617a">the calls, and reviews every change — while an AI assistant does much of the building.</text>
+
+  <!-- ======================= CARD 1: Human  (x=112 w=452) ======================= -->
+  <rect x="112" y="402" width="452" height="476" rx="26" fill="#ffffff" stroke="#e1e6ef" stroke-width="2"/>
+  <rect x="148" y="440" width="66" height="66" rx="16" fill="#fff2e0"/>
+  <circle cx="181" cy="464" r="11" fill="#e8962e"/>
+  <path d="M162 494 C162 478 200 478 200 494 Z" fill="#e8962e"/>
+  <text x="234" y="464" font-size="22" font-weight="700" letter-spacing="2" fill="#8792a6">THE MAINTAINER</text>
+  <text x="234" y="500" font-size="42" font-weight="800" fill="#0f1830">Human</text>
+  <g font-size="28" fill="#2b3550">
+    <text x="196" y="576">Sets direction &amp; priorities</text>
+    <text x="196" y="630">Reviews every change</text>
+    <text x="196" y="684">Decides &amp; merges</text>
+  </g>
+  <circle cx="163" cy="568" r="7" fill="#e8962e"/>
+  <circle cx="163" cy="622" r="7" fill="#e8962e"/>
+  <circle cx="163" cy="676" r="7" fill="#e8962e"/>
+  <rect x="148" y="718" width="380" height="120" rx="14" fill="#fff8ee" stroke="#f0d9b5" stroke-width="2" stroke-dasharray="7 6"/>
+  <text x="170" y="766" font-size="25" fill="#6b5a3e">“Add a Canada locale.”</text>
+  <text x="170" y="804" font-size="25" fill="#6b5a3e">“Write the GitHub-leak source.”</text>
+
+  <!-- gap 1 (564..774, center 669) -->
+  <text x="669" y="574" font-size="23" font-weight="700" fill="#3457d5" text-anchor="middle">ideas</text>
+  <line x1="606" y1="606" x2="726" y2="606" stroke="#8aa0d8" stroke-width="4" stroke-dasharray="10 8"/>
+  <polygon points="732,606 718,598 718,614" fill="#8aa0d8"/>
+  <text x="669" y="660" font-size="23" fill="#9aa4b6" text-anchor="middle">questions</text>
+  <line x1="726" y1="636" x2="612" y2="636" stroke="#c2cad9" stroke-width="3"/>
+
+  <!-- ======================= CARD 2: AI assistant  (x=774 w=452) ======================= -->
+  <rect x="774" y="402" width="452" height="476" rx="26" fill="#ffffff" stroke="#e1e6ef" stroke-width="2"/>
+  <rect x="810" y="440" width="66" height="66" rx="16" fill="#e8f0ff"/>
+  <rect x="827" y="457" width="32" height="32" rx="6" fill="#3457d5"/>
+  <text x="896" y="464" font-size="22" font-weight="700" letter-spacing="2" fill="#8792a6">THE BUILDER</text>
+  <text x="896" y="500" font-size="42" font-weight="800" fill="#0f1830">AI assistant</text>
+  <g font-size="28" fill="#2b3550">
+    <text x="860" y="576">Clones the repo</text>
+    <text x="860" y="630">Reads the code, then builds</text>
+    <text x="860" y="684">Tests &amp; opens a pull request</text>
+  </g>
+  <circle cx="825" cy="568" r="7" fill="#3457d5"/>
+  <circle cx="825" cy="622" r="7" fill="#3457d5"/>
+  <circle cx="825" cy="676" r="7" fill="#3457d5"/>
+  <rect x="810" y="718" width="380" height="120" rx="14" fill="#eef3fb"/>
+  <rect x="830" y="740" width="320" height="42" rx="21" fill="#2fa36b"/>
+  <text x="990" y="768" font-size="22" font-weight="700" fill="#ffffff" text-anchor="middle">defensive-only · read-only</text>
+  <text x="830" y="814" font-size="24" fill="#3a4866">stdlib-only · search-only · signed-off</text>
+
+  <!-- gap 2 (1226..1436, center 1331) -->
+  <text x="1331" y="574" font-size="23" font-weight="700" fill="#3457d5" text-anchor="middle">PR</text>
+  <line x1="1268" y1="606" x2="1388" y2="606" stroke="#3457d5" stroke-width="4"/>
+  <polygon points="1394,606 1380,598 1380,614" fill="#3457d5"/>
+  <text x="1331" y="660" font-size="23" fill="#2fa36b" text-anchor="middle">CI result</text>
+  <line x1="1388" y1="636" x2="1274" y2="636" stroke="#2fa36b" stroke-width="3"/>
+
+  <!-- ======================= CARD 3: GitHub  (x=1436 w=452) ======================= -->
+  <rect x="1436" y="402" width="452" height="476" rx="26" fill="#ffffff" stroke="#e1e6ef" stroke-width="2"/>
+  <rect x="1472" y="440" width="66" height="66" rx="16" fill="#eef1f5"/>
+  <circle cx="1492" cy="458" r="8" fill="#3a4866"/>
+  <circle cx="1492" cy="488" r="8" fill="#3a4866"/>
+  <circle cx="1518" cy="473" r="8" fill="#3a4866"/>
+  <path d="M1492 458 L1492 488 M1492 473 L1518 473" stroke="#3a4866" stroke-width="4" fill="none"/>
+  <text x="1558" y="464" font-size="22" font-weight="700" letter-spacing="2" fill="#8792a6">THE COMMONS</text>
+  <text x="1558" y="500" font-size="42" font-weight="800" fill="#0f1830">GitHub</text>
+  <g font-size="28" fill="#2b3550">
+    <text x="1522" y="576">Pull request &amp; discussion</text>
+    <text x="1522" y="630" font-weight="700">CI: ruff + tests</text>
+    <text x="1522" y="684">Human review, then merge</text>
+  </g>
+  <circle cx="1487" cy="568" r="7" fill="#3457d5"/>
+  <circle cx="1487" cy="622" r="7" fill="#2fa36b"/>
+  <circle cx="1487" cy="676" r="7" fill="#e8962e"/>
+  <rect x="1472" y="718" width="380" height="120" rx="14" fill="#f1f3f7"/>
+  <text x="1494" y="766" font-size="24" fill="#3a4866">Anyone can contribute — <tspan font-weight="700">human or AI</tspan>.</text>
+  <text x="1494" y="804" font-size="24" fill="#3a4866">Every change goes through the same gate.</text>
+
+  <!-- ======================= bottom banner ======================= -->
+  <rect x="112" y="928" width="1776" height="160" rx="22" fill="url(#banner)"/>
+  <rect x="152" y="968" width="72" height="72" rx="16" fill="#243356"/>
+  <rect x="170" y="986" width="36" height="36" rx="7" fill="#5b78c8"/>
+  <text x="256" y="998" font-size="34" font-weight="800" fill="#ffffff">If you're an AI assistant, you're explicitly invited to contribute.</text>
+  <text x="256" y="1044" font-size="25" fill="#aab6d4">Attackers are many and highly motivated, while skilled defenders are scarce.</text>
+  <text x="256" y="1076" font-size="25" fill="#aab6d4">stille-hunter's bet is that AI can help close that gap — human-directed.</text>
+
+  <!-- footer -->
+  <text x="112" y="1138" font-size="24" fill="#9aa4b6">Forex Robotics Co., Ltd. · stille-hunter is open source (Apache-2.0) · github.com/ForexRobotics/stille-hunter</text>
+</svg>
