@@ -97,6 +97,10 @@ endorsement or an official Anthropic project.
 
 ![Human-directed, AI-built](docs/human-directed-ai-built.svg)
 
+Contributions — from people and from AI assistants — are welcome. Every commit
+is signed off under the [Developer Certificate of Origin](DCO) (`git commit -s`);
+see [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## License
 
 Apache-2.0. See [LICENSE](LICENSE).
