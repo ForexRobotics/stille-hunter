@@ -1,0 +1,9 @@
+{
+  "_comment": "Copy this to config.json (gitignored) and fill in real values. Pass with: stille-hunter check <ledger> --sources hibp --config config.json",
+  "hibp": {
+    "api_key": "YOUR_32_CHAR_HIBP_API_KEY_HERE",
+    "user_agent": "stille-hunter-yourorg",
+    "min_interval": 6.5,
+    "include_unverified": true
+  }
+}

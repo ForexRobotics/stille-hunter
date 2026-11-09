@@ -1,0 +1,39 @@
+# ---------------------------------------------------------------------------
+# NEVER COMMIT THESE. They are the whole security point of the tool.
+# ---------------------------------------------------------------------------
+# Ledgers: the token -> seed-location map. Leaking this unmasks every canary.
+*.ledger.json
+*.ledger.jsonl
+*.ledger.csv
+# Seeded data you generated (keep it out of the repo too).
+canary_seeded.*
+# Real config with API keys. Commit examples/config.example.json instead.
+config.json
+*.config.json
+conf.json
+# ---------------------------------------------------------------------------
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+env/
+
+# Tooling
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Editors / OS
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db

@@ -1,0 +1,34 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "stille-hunter"
+version = "0.1.0"
+description = "Generate leak-canary records and check them against leak sources."
+readme = "README.md"
+requires-python = ">=3.9"
+license = "Apache-2.0"
+authors = [{ name = "Forex Robotics Co., Ltd." }]
+keywords = ["security", "canary", "breach", "leak-detection", "honeytoken"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Information Technology",
+    "Topic :: Security",
+    "Programming Language :: Python :: 3",
+]
+# No third-party runtime dependencies: the public tool uses only the stdlib.
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/forex-robotics/stille-hunter"
+Issues = "https://github.com/forex-robotics/stille-hunter/issues"
+
+[project.scripts]
+stille-hunter = "stille_hunter.cli:main"
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/stille_hunter"]
