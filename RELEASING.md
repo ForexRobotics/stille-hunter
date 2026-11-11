@@ -29,13 +29,17 @@ two places. Confirm what the build sees with:
 
 ## Cutting a release
 
-The helper script does the whole flow (bump, changelog date, sign-off commit,
-tag, push, GitHub release):
+`tools/release.ps1` is a **Windows maintainer helper** (PowerShell) that does
+the whole flow (bump, changelog date, sign-off commit, tag, push, GitHub
+release). It is a convenience only — on Linux/macOS, or if you prefer, use the
+manual steps below, which are the portable source of truth. The script contains
+no secrets; it only drives `git` and `gh`.
 
-    powershell -ExecutionPolicy Bypass -File .\release.ps1 -Part patch
-    #                                                       -Part minor
-    #                                                       -Part major
+    powershell -ExecutionPolicy Bypass -File .\tools\release.ps1 -Part patch
+    #                                                             -Part minor
+    #                                                             -Part major
     #   or an explicit version:  -Version 0.2.0
+    #   preview only (no changes):  add -DryRun
 
 What it does, in order:
 
