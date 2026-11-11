@@ -42,13 +42,35 @@ This writes two files:
   token to where you planted it. See [docs/ledger-format.md](docs/ledger-format.md).
 
 Records look like real members: locale-consistent names, addresses, phones and
-email domains (`--locale jp|us|gb`), test-BIN card numbers that can never be
+email domains (`--locale jp|us|gb|ca`), test-BIN card numbers that can never be
 charged, and no CVV or national IDs. Every record is an adult and carries a
 unique token woven through its email, user id and password hash.
 
 **`--self-domain`** is a domain you control. Canaries on it are flagged
 `detect: inbox` — if you set a catch-all, mail sent to one is an instant leak
 signal. The rest get free-mail addresses (`detect: search`), found by searching.
+
+#### Canary types
+
+What a canary *is* is a plugin too (a `CanaryType`). `member` is the default;
+others plant a single secret-looking string, for seeding into config, `.env`
+files or CI variables where the GitHub source will catch it if it leaks.
+
+```bash
+stille-hunter generate --list-types                       # see all types
+stille-hunter generate --type api_token --provider github # a fake GitHub PAT
+stille-hunter generate --type aws_key                     # a fake AWS key pair
+```
+
+| type | plants | detect |
+|------|--------|--------|
+| `member` | a full member record (name, address, card, email, ...) | inbox + search |
+| `aws_key` | an inert AWS access-key pair | search |
+| `api_token` | an inert API token (GitHub / OpenAI / Stripe / Slack / generic) | search |
+
+Add a type by dropping a module in `stille_hunter/types/`; the engine never
+changes. Each token is inert — it authenticates to nothing — with a unique
+canary token woven into its tail so a leak traces back through the ledger.
 
 ### 2. Check for leaks
 

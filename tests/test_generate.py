@@ -90,3 +90,23 @@ def test_aws_key_shape_and_token():
         assert rec["record_id"].upper() in kid
         assert rec["record_id"] in sec
         assert rec["_detect"] == "search"
+
+
+# ---- api_token type -------------------------------------------------------
+def test_api_token_prefix_and_token_woven():
+    prefixes = {"github": "ghp_", "openai": "sk-", "stripe": "sk_live_",
+                "slack": "xoxb-"}
+    for provider, prefix in prefixes.items():
+        for rec in _make("api_token", provider=provider, count=25):
+            tok = rec["api_token"]
+            assert tok.startswith(prefix), f"{provider}: {tok}"
+            assert rec["record_id"] in tok, "canary token must be recoverable"
+            assert rec["_detect"] == "search"
+            # the searchable marker is recorded under the name the github
+            # source looks for
+            assert rec["_ledger"]["api_token"] == tok
+
+
+def test_api_token_mix_spreads_providers():
+    seen = {rec["provider"] for rec in _make("api_token", mix=True, count=200)}
+    assert len(seen) >= 3, f"--mix should vary providers, saw {seen}"
