@@ -30,8 +30,9 @@ Signed-off-by: Your Name <your.email@example.com>
   `git commit --amend -s`, or for several commits
   `git rebase --signoff HEAD~<n>`.
 
-Contributions submitted on behalf of Forex Robotics Co., Ltd. are signed off in
-that name, e.g. `Signed-off-by: Forex Robotics Co., Ltd. <contact@...>`.
+Sign off with your own real name and email. Maintainers contributing on behalf
+of Forex Robotics Co., Ltd. sign off under their personal name with a company
+email, e.g. `Signed-off-by: Jane Doe <jane@forexrobotics.jp>`.
 
 ## What stille-hunter will and won't accept
 

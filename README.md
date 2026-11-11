@@ -75,6 +75,7 @@ implementing the `CheckSource` contract; add one by dropping a module in
 |--------|-------|-------|
 | `null` | — | nothing (reference stub) |
 | `hibp` | HIBP API key | canary emails in known breaches |
+| `github` | GitHub token | canary secrets (keys, tokens, hashes) in public code |
 
 Proprietary sources (dark-web crawl, commercial threat feeds) ship separately
 and register through the same contract.

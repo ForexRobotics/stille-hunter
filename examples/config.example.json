@@ -5,5 +5,10 @@
     "user_agent": "stille-hunter-yourorg",
     "min_interval": 6.5,
     "include_unverified": true
+  },
+  "github": {
+    "token": "YOUR_GITHUB_PAT_HERE",
+    "user_agent": "stille-hunter-yourorg",
+    "min_interval": 6.5
   }
 }

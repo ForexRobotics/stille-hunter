@@ -40,7 +40,13 @@ from typing import Iterable
 # ---------------------------------------------------------------------------
 @dataclass(frozen=True)
 class Canary:
-    """One ledger entry, reduced to what a source needs."""
+    """One ledger entry, reduced to what a source needs.
+
+    The member-type fields (email/user_id/password_hash) are kept as named
+    attributes for convenience and may be empty for non-member canaries. Any
+    other ledger markers a canary type recorded (aws_access_key_id, api_token,
+    ...) ride along in `extra`, so a source can search whatever a given canary
+    actually carries without the frame knowing every type."""
     record_id: str
     seed_tag: str
     detect: str          # "inbox" | "search"
@@ -48,15 +54,19 @@ class Canary:
     email: str
     user_id: str
     password_hash: str
+    extra: dict = field(default_factory=dict)
 
     def tokens(self) -> dict[str, str]:
-        """The searchable markers for this canary, keyed by kind."""
-        return {
+        """All searchable markers for this canary, keyed by kind (named fields
+        plus any type-specific markers in `extra`, empties dropped)."""
+        out = {
             "email": self.email,
             "user_id": self.user_id,
             "password_hash": self.password_hash,
             "record_id": self.record_id,
         }
+        out.update(self.extra)
+        return {k: v for k, v in out.items() if v}
 
 
 @dataclass
@@ -155,10 +165,15 @@ def load_ledger(path: str, include_inbox: bool) -> list[Canary]:
             rows = csv.DictReader(f)
         else:
             rows = (json.loads(line) for line in f if line.strip())
+        # ledger keys the frame handles itself; everything else is a
+        # type-specific marker and goes into Canary.extra.
+        known = {"record_id", "seed_tag", "detect", "locale", "email",
+                 "user_id", "password_hash", "created_at"}
         for r in rows:
             detect = r.get("detect", "search")
             if detect == "inbox" and not include_inbox:
                 continue
+            extra = {k: v for k, v in r.items() if k not in known and v}
             canaries.append(Canary(
                 record_id=r["record_id"],
                 seed_tag=r.get("seed_tag", ""),
@@ -167,6 +182,7 @@ def load_ledger(path: str, include_inbox: bool) -> list[Canary]:
                 email=r.get("email", ""),
                 user_id=r.get("user_id", ""),
                 password_hash=r.get("password_hash", ""),
+                extra=extra,
             ))
     return canaries
 
