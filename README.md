@@ -111,6 +111,11 @@ and register through the same contract.
 - **The ledger is secret.** It is excluded from the repo by `.gitignore` and
   must never be planted or shared.
 
+## Roadmap
+
+See [ROADMAP.md](ROADMAP.md) for what is planned, and
+[CHANGELOG.md](CHANGELOG.md) for what has shipped.
+
 ## Human-directed, AI-built.
 
 stille-hunter is an experiment in building and maintaining an OSS project that
