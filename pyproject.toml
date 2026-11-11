@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "stille-hunter"
-version = "0.1.0"
+dynamic = ["version"]   # single source of truth: src/stille_hunter/__init__.py
 description = "Generate leak-canary records and check them against leak sources."
 readme = "README.md"
 requires-python = ">=3.9"
@@ -21,14 +21,18 @@ classifiers = [
 dependencies = []
 
 [project.urls]
-Homepage = "https://github.com/forex-robotics/stille-hunter"
-Issues = "https://github.com/forex-robotics/stille-hunter/issues"
+Homepage = "https://github.com/ForexRobotics/stille-hunter"
+Issues = "https://github.com/ForexRobotics/stille-hunter/issues"
+Changelog = "https://github.com/ForexRobotics/stille-hunter/blob/main/CHANGELOG.md"
 
 [project.scripts]
 stille-hunter = "stille_hunter.cli:main"
 
 [project.optional-dependencies]
 dev = ["pytest"]
+
+[tool.hatch.version]
+path = "src/stille_hunter/__init__.py"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/stille_hunter"]
