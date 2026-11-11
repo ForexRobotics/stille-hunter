@@ -62,7 +62,11 @@ stille-hunter sets a quiet trap and waits. Keep contributions inside that line:
    pytest
    ```
 4. Commit with `-s` (DCO sign-off), push, and open a pull request.
-5. CI runs ruff + tests; a human reviews and merges.
+5. **Link the issue it resolves.** Put a closing keyword in the pull request
+   description, e.g. `Closes #12` (or `Fixes #12` / `Resolves #12`). When the PR
+   merges, GitHub closes that issue automatically and the project board moves
+   both the issue and the PR to Done.
+6. CI runs ruff + tests; a human reviews and merges.
 
 ## Questions
 
