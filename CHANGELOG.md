@@ -9,6 +9,23 @@ While the version is `0.x`, minor bumps may include breaking changes; see
 
 ## [Unreleased]
 
+### Added
+- Database-ready output for any canary type (#20):
+  - `--format sql` writes `INSERT` statements (`--dialect mysql|postgres`,
+    `--table`); `--format json` writes a JSON array for framework seeders such
+    as Laravel's `DB::table()->insert()`.
+  - `--columns field=column,...` selects and renames fields to match a schema.
+  - `--table` is recorded in the ledger as where the rows were planted.
+  - `--ledger-out` writes the ledger to its own path (e.g. private storage),
+    so it does not land next to seeded data inside an app.
+  - Seeded output never carries anything that marks the rows as canaries.
+- `db_dump` canary type: plausible table rows with a searchable reference
+  code (e.g. `CUS-A3F8C10421`) that also appears in a free-text note; the
+  `github` source searches it as `marker` (#20, formerly #4).
+
+### Changed
+- `docs/ledger-format.md` documents every type's ledger fields.
+
 ## [0.2.0] - 2026-11-16
 
 ### Added

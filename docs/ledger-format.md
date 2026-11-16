@@ -15,22 +15,36 @@ management console.
 
 One row per canary. JSONL (one JSON object per line) or CSV.
 
+Every row has these fields:
+
 | field | meaning |
 |-------|---------|
-| `record_id` | The unique token for this canary (6 hex chars). Also embedded in `email` and `user_id`. |
+| `record_id` | The unique token for this canary (6 hex chars), woven into its markers. |
 | `seed_tag` | Where this batch was planted, e.g. `www-customers`. Set at generation with `--tag`. |
-| `detect` | `inbox` = on a domain you control (catch-all mail can catch it) · `search` = free-mail, search-only. |
-| `locale` | Region profile used: `jp`, `us`, `gb`, … |
-| `email` | The canary email address (token embedded in the local-part). |
-| `user_id` | The canary login id (token suffix). |
-| `password_hash` | sha256 of a per-record fake secret; the token is recoverable by searching the digest. |
+| `detect` | `inbox` = on a domain you control (catch-all mail can catch it) · `search` = found by searching. |
+| `table` | *(optional)* The table the rows were planted in, when generated with `--table`. Recorded, not searched. |
 | `created_at` | ISO-8601 UTC timestamp of generation. |
+
+Each canary type adds its own fields — the markers a source searches for, and
+some context:
+
+| type | fields |
+|------|--------|
+| `member` | `locale`, `email`, `user_id`, `password_hash` |
+| `db_dump` | `locale`, `email`, `marker` (the reference code, e.g. `CUS-A3F8C10421`) |
+| `aws_key` | `aws_access_key_id`, `aws_secret_access_key`, optional `region` |
+| `api_token` | `provider`, `api_token` |
+| `azure_credential` | `azure_client_id`, `azure_tenant_id`, `azure_client_secret` |
+| `mcp_config` | `mcp_server`, `mcp_token` |
+| `kubeconfig` | `cluster_name`, `kube_token` |
 
 ## How a consumer uses it
 
 - **Search detection** (`check`): take the searchable markers — `email`,
-  `user_id`, `password_hash`, `record_id` — and look each up in a leak source.
+  `password_hash`, a key, token or `marker`, `record_id` — and look each up in a
+  leak source. Each source picks the kinds it can search (`check --list-sources`).
   A match means that canary (and therefore its `seed_tag` location) leaked.
+  Context fields such as `table`, `locale` or `azure_tenant_id` are never searched.
 - **Inbox detection** (mail catch-all): when mail arrives for a canary address,
   match the local-part's token against `record_id` to find the `seed_tag`.
 

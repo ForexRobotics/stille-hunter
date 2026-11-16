@@ -79,3 +79,16 @@ def test_github_searches_azure_ids_but_not_tenant(tmp_path):
     assert "azure_client_secret" in markers
     assert "azure_client_id" in markers
     assert "azure_tenant_id" not in markers   # shared across a tenant: not unique
+
+
+def test_github_searches_db_dump_marker_but_not_table(tmp_path):
+    load_plugins()
+    gh = _REGISTRY["github"](token="x")
+    path = _write_ledger(tmp_path, [{
+        "record_id": "a3f8c1", "seed_tag": "t", "detect": "search",
+        "email": "a.b.a3f8c1@gmail.com", "marker": "CUS-A3F8C10421",
+        "table": "customers",
+    }])
+    markers = gh._markers(load_ledger(path, include_inbox=False)[0])
+    assert markers["marker"] == "CUS-A3F8C10421"
+    assert "table" not in markers   # where it was planted, not something to search
