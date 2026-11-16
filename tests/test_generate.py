@@ -126,3 +126,28 @@ def test_azure_credential_shape_and_token():
         assert rec["_detect"] == "search"
         assert rec["_ledger"]["azure_client_secret"] == sec
         assert rec["_ledger"]["azure_client_id"] == rec["azure_client_id"]
+
+
+# ---- mcp_config type ------------------------------------------------------
+def test_mcp_config_is_valid_json_with_token():
+    import json
+    for server, prefix, env_var in (("github", "ghp_", "GITHUB_PERSONAL_ACCESS_TOKEN"),
+                                    ("slack", "xoxb-", "SLACK_BOT_TOKEN")):
+        for rec in _make("mcp_config", server=server, count=20):
+            cfg = json.loads(rec["mcp_config"])
+            entry = cfg["mcpServers"][server]
+            assert entry["env"][env_var] == rec["mcp_token"]
+            assert rec["mcp_token"].startswith(prefix)
+            assert rec["record_id"] in rec["mcp_token"]
+            assert rec["_ledger"]["mcp_token"] == rec["mcp_token"]
+            assert rec["_detect"] == "search"
+
+
+def test_mcp_config_only_uses_official_scoped_packages():
+    # an invented or unscoped package name could be registered by anyone and
+    # then run by whoever copies a leaked config
+    import json
+    for rec in _make("mcp_config", mix=True, count=50):
+        args = json.loads(rec["mcp_config"])["mcpServers"][rec["mcp_server"]]["args"]
+        packages = [a for a in args if not a.startswith("-")]
+        assert packages and all(p.startswith("@modelcontextprotocol/") for p in packages)
