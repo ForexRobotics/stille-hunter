@@ -26,6 +26,9 @@ While the version is `0.x`, minor bumps may include breaking changes; see
 - Publishing to PyPI: pushing a `vX.Y.Z` tag checks the tag against the
   version, runs the tests, publishes with Trusted Publishing (no stored
   token), and creates the GitHub Release from the changelog (#6).
+- Releases are announced on Discord when a `DISCORD_WEBHOOK` secret is set:
+  version, release notes (trimmed to Discord's limit) and links, with
+  mentions disabled.
 - Dependabot keeps the pinned GitHub Actions up to date.
 - README badges, and PyPI classifiers for supported Python versions.
 
