@@ -1,10 +1,11 @@
 # release.ps1  -  cut a stille-hunter release
-# Bumps the version, dates the changelog, runs tests, commits (signed), tags,
-# pushes, and creates a GitHub release.
+# Bumps the version, dates the changelog, runs tests, commits (signed), tags
+# and pushes. The pushed tag starts the publish workflow in GitHub Actions,
+# which publishes to PyPI and creates the GitHub Release.
 #
-#   powershell -ExecutionPolicy Bypass -File .\release.ps1 -Part patch
-#   powershell -ExecutionPolicy Bypass -File .\release.ps1 -Part minor
-#   powershell -ExecutionPolicy Bypass -File .\release.ps1 -Version 0.2.0
+#   powershell -ExecutionPolicy Bypass -File .\tools\release.ps1 -Part patch
+#   powershell -ExecutionPolicy Bypass -File .\tools\release.ps1 -Part minor
+#   powershell -ExecutionPolicy Bypass -File .\tools\release.ps1 -Version 0.2.0
 #   add -DryRun to preview without changing anything.
 #
 # Run from the repo root. ASCII-only (Windows PowerShell reads BOM-less .ps1 as cp932).
@@ -67,8 +68,8 @@ if (git tag --list "v$newStr") {
 if ((Get-Content $changelog -Raw) -match "## \[$([regex]::Escape($newStr))\]") {
     Write-Host "CHANGELOG already has a [$newStr] section." -ForegroundColor Red
     Write-Host "That version is already written up. To tag it, do it manually:" -ForegroundColor Yellow
-    Write-Host "    git tag v$newStr; git push --tags" -ForegroundColor Yellow
-    Write-Host "    gh release create v$newStr --title v$newStr --notes-file <section>" -ForegroundColor Yellow
+    Write-Host "    git tag v$newStr; git push origin v$newStr" -ForegroundColor Yellow
+    Write-Host "  (the publish workflow then releases it to PyPI and GitHub)" -ForegroundColor Yellow
     exit 1
 }
 
@@ -120,21 +121,18 @@ if ($LASTEXITCODE -ne 0) {
 Write-NoBom $initPath $newInit
 Write-NoBom $changelog $cl2
 
-$notesFile = Join-Path $env:TEMP "stille-release-notes-$newStr.md"
-Write-NoBom $notesFile $relNotes
-
 # --- 4. commit, tag, push ---------------------------------------------------
 Write-Host "== commit / tag / push ==" -ForegroundColor Cyan
 git add $initPath $changelog
 git commit -s -m "Release v$newStr"
 git tag "v$newStr"
 git push
-git push --tags
+git push origin "v$newStr"
 
-# --- 5. GitHub release ------------------------------------------------------
-Write-Host "== gh release ==" -ForegroundColor Cyan
-gh release create "v$newStr" --repo $repoSlug --title "v$newStr" --notes-file $notesFile
-Remove-Item $notesFile -ErrorAction SilentlyContinue
-
-Write-Host "`nReleased v$newStr" -ForegroundColor Green
-Write-Host "https://github.com/$repoSlug/releases/tag/v$newStr" -ForegroundColor Green
+# --- 5. the rest happens in GitHub Actions ----------------------------------
+# Pushing the tag starts .github/workflows/publish.yml, which checks the tag
+# against __version__, runs the tests, publishes to PyPI, and then creates the
+# GitHub Release from this version's CHANGELOG section.
+Write-Host "`nTagged and pushed v$newStr" -ForegroundColor Green
+Write-Host "Publishing runs in GitHub Actions (PyPI, then the GitHub Release):" -ForegroundColor Green
+Write-Host "https://github.com/$repoSlug/actions/workflows/publish.yml" -ForegroundColor Green

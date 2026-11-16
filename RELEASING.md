@@ -30,8 +30,8 @@ two places. Confirm what the build sees with:
 ## Cutting a release
 
 `tools/release.ps1` is a **Windows maintainer helper** (PowerShell) that does
-the whole flow (bump, changelog date, sign-off commit, tag, push, GitHub
-release). It is a convenience only — on Linux/macOS, or if you prefer, use the
+the local half of the flow (bump, changelog date, sign-off commit, tag, push).
+It is a convenience only — on Linux/macOS, or if you prefer, use the
 manual steps below, which are the portable source of truth. The script contains
 no secrets; it only drives `git` and `gh`.
 
@@ -48,8 +48,10 @@ What it does, in order:
 3. Moves the `## [Unreleased]` notes in `CHANGELOG.md` into a new
    `## [X.Y.Z] - <today>` section and refreshes the compare links.
 4. Runs the test suite (`pytest`) — aborts the release if anything fails.
-5. `git commit -s -m "Release vX.Y.Z"`, `git tag vX.Y.Z`, `git push && git push --tags`.
-6. `gh release create vX.Y.Z` using that version's changelog section as the notes.
+5. `git commit -s -m "Release vX.Y.Z"`, `git tag vX.Y.Z`, then pushes the
+   commit and the tag.
+
+Pushing the tag hands over to GitHub Actions (see [Publishing](#publishing)).
 
 ### Manual equivalent
 
@@ -61,15 +63,30 @@ If you'd rather not use the script:
    `[Unreleased]` / `[X.Y.Z]` compare links at the bottom.
 4. `pytest` (must pass).
 5. `git commit -s -m "Release vX.Y.Z"`
-6. `git tag vX.Y.Z && git push && git push --tags`
-7. `gh release create vX.Y.Z --notes-file <section>` (or paste the notes).
+6. `git tag vX.Y.Z && git push && git push origin vX.Y.Z`
 
-## PyPI (later)
+## Publishing
 
-Not published to PyPI yet. When ready:
+Pushing a `vX.Y.Z` tag starts `.github/workflows/publish.yml`, which:
 
-    python -m build
-    python -m twine upload dist/*
+1. checks that the tag matches `__version__` (a mismatch stops the release),
+2. runs the tests and builds the sdist and wheel,
+3. publishes to PyPI with **Trusted Publishing** — GitHub proves its identity
+   to PyPI with a short-lived OIDC token, so no PyPI token is stored anywhere,
+4. creates the GitHub Release, using this version's CHANGELOG section as notes.
 
-Tag first, then upload the built artifacts for that tag, so the PyPI release and
-the git tag always match.
+Watch it at <https://github.com/ForexRobotics/stille-hunter/actions/workflows/publish.yml>.
+If a step fails before the PyPI upload, nothing is published: fix it, delete
+the tag (`git push --delete origin vX.Y.Z`, `git tag -d vX.Y.Z`) and tag again.
+A version that reached PyPI can never be uploaded again — release a new
+patch version instead.
+
+### One-time setup
+
+- **PyPI**: at <https://pypi.org/manage/account/publishing/>, add a pending
+  publisher with project name `stille-hunter`, owner `ForexRobotics`,
+  repository `stille-hunter`, workflow `publish.yml`, environment `pypi`.
+  The first successful run creates the project; after that the publisher is
+  permanent.
+- **GitHub**: the `pypi` environment is created automatically on the first run.
+  Optionally restrict it to `v*` tags under Settings -> Environments -> pypi.

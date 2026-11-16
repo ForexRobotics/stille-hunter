@@ -1,6 +1,11 @@
-<img src="docs/icon.png" alt="stille-hunter" width="96" align="right" />
+<img src="https://raw.githubusercontent.com/ForexRobotics/stille-hunter/main/docs/icon.png" alt="stille-hunter" width="96" align="right" />
 
 # stille-hunter
+
+[![CI](https://github.com/ForexRobotics/stille-hunter/actions/workflows/ci.yml/badge.svg)](https://github.com/ForexRobotics/stille-hunter/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/stille-hunter.svg)](https://pypi.org/project/stille-hunter/)
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/ForexRobotics/stille-hunter/blob/main/LICENSE)
+[![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://pypi.org/project/stille-hunter/)
 
 Plant realistic fake user records as **leak canaries**, then watch for them
 surfacing in breaches and public leaks. If a canary shows up somewhere, data it
@@ -15,7 +20,7 @@ and waits.
 > ("silence"), the iron-meteorite bird (隕鉄鳥) of *Frieren* — it waits,
 > motionless, until the prey reveals itself.
 
-![stille-hunter overview](docs/overview.svg)
+![stille-hunter overview](https://raw.githubusercontent.com/ForexRobotics/stille-hunter/main/docs/overview.svg)
 
 ## Install
 
@@ -39,7 +44,7 @@ This writes two files:
 - `canary_seeded.jsonl` — **plant this** in the database, export, or table you
   want to watch.
 - `canary_seeded.ledger.jsonl` — **keep this secret.** It maps each canary's
-  token to where you planted it. See [docs/ledger-format.md](docs/ledger-format.md).
+  token to where you planted it. See [docs/ledger-format.md](https://github.com/ForexRobotics/stille-hunter/blob/main/docs/ledger-format.md).
 
 Records look like real members: locale-consistent names, addresses, phones and
 email domains (`--locale jp|us|gb|ca`), test-BIN card numbers that can never be
@@ -113,8 +118,8 @@ and register through the same contract.
 
 ## Roadmap
 
-See [ROADMAP.md](ROADMAP.md) for what is planned, and
-[CHANGELOG.md](CHANGELOG.md) for what has shipped.
+See [ROADMAP.md](https://github.com/ForexRobotics/stille-hunter/blob/main/ROADMAP.md) for what is planned, and
+[CHANGELOG.md](https://github.com/ForexRobotics/stille-hunter/blob/main/CHANGELOG.md) for what has shipped.
 
 ## Human-directed, AI-built.
 
@@ -123,12 +128,12 @@ is human-directed, AI-built. The direction, design decisions and review are
 human; the implementation is written with AI assistance. This is not an
 endorsement or an official Anthropic project.
 
-![Human-directed, AI-built](docs/human-directed-ai-built.svg)
+![Human-directed, AI-built](https://raw.githubusercontent.com/ForexRobotics/stille-hunter/main/docs/human-directed-ai-built.svg)
 
 Contributions — from people and from AI assistants — are welcome. Every commit
-is signed off under the [Developer Certificate of Origin](DCO) (`git commit -s`);
-see [CONTRIBUTING.md](CONTRIBUTING.md).
+is signed off under the [Developer Certificate of Origin](https://github.com/ForexRobotics/stille-hunter/blob/main/DCO) (`git commit -s`);
+see [CONTRIBUTING.md](https://github.com/ForexRobotics/stille-hunter/blob/main/CONTRIBUTING.md).
 
 ## License
 
-Apache-2.0. See [LICENSE](LICENSE).
+Apache-2.0. See [LICENSE](https://github.com/ForexRobotics/stille-hunter/blob/main/LICENSE).
