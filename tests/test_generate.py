@@ -110,3 +110,72 @@ def test_api_token_prefix_and_token_woven():
 def test_api_token_mix_spreads_providers():
     seen = {rec["provider"] for rec in _make("api_token", mix=True, count=200)}
     assert len(seen) >= 3, f"--mix should vary providers, saw {seen}"
+
+
+# ---- azure_credential type ------------------------------------------------
+def test_azure_credential_shape_and_token():
+    import re
+    import uuid
+    secret_re = re.compile(r"[A-Za-z0-9_~.]{3}\dQ~[A-Za-z0-9_~.-]{34}")
+    for rec in _make("azure_credential", count=50):
+        uuid.UUID(rec["azure_client_id"])
+        uuid.UUID(rec["azure_tenant_id"])
+        sec = rec["azure_client_secret"]
+        assert secret_re.fullmatch(sec), sec
+        assert sec.endswith(rec["record_id"])
+        assert rec["_detect"] == "search"
+        assert rec["_ledger"]["azure_client_secret"] == sec
+        assert rec["_ledger"]["azure_client_id"] == rec["azure_client_id"]
+
+
+# ---- mcp_config type ------------------------------------------------------
+def test_mcp_config_is_valid_json_with_token():
+    import json
+    for server, prefix, env_var in (("github", "ghp_", "GITHUB_PERSONAL_ACCESS_TOKEN"),
+                                    ("slack", "xoxb-", "SLACK_BOT_TOKEN")):
+        for rec in _make("mcp_config", server=server, count=20):
+            cfg = json.loads(rec["mcp_config"])
+            entry = cfg["mcpServers"][server]
+            assert entry["env"][env_var] == rec["mcp_token"]
+            assert rec["mcp_token"].startswith(prefix)
+            assert rec["record_id"] in rec["mcp_token"]
+            assert rec["_ledger"]["mcp_token"] == rec["mcp_token"]
+            assert rec["_detect"] == "search"
+
+
+def test_mcp_config_only_uses_official_scoped_packages():
+    # an invented or unscoped package name could be registered by anyone and
+    # then run by whoever copies a leaked config
+    import json
+    for rec in _make("mcp_config", mix=True, count=50):
+        args = json.loads(rec["mcp_config"])["mcpServers"][rec["mcp_server"]]["args"]
+        packages = [a for a in args if not a.startswith("-")]
+        assert packages and all(p.startswith("@modelcontextprotocol/") for p in packages)
+
+
+# ---- kubeconfig type ------------------------------------------------------
+def test_kubeconfig_token_server_and_ca():
+    import base64
+    import ipaddress
+    import re
+    from urllib.parse import urlparse
+    for rec in _make("kubeconfig", count=50):
+        kc = rec["kubeconfig"]
+        tok = rec["kube_token"]
+        # bootstrap-token format, and its id part IS the canary token
+        assert re.fullmatch(r"[a-z0-9]{6}\.[a-z0-9]{16}", tok)
+        assert tok.split(".")[0] == rec["record_id"]
+        assert f"    token: {tok}\n" in kc
+        # server is a private address: never a real, reachable cluster
+        server = re.search(r"^    server: (\S+)$", kc, re.M).group(1)
+        url = urlparse(server)
+        assert url.scheme == "https" and url.port == 6443
+        assert ipaddress.ip_address(url.hostname).is_private
+        # CA data decodes to a PEM-shaped block
+        ca = re.search(r"certificate-authority-data: (\S+)", kc).group(1)
+        pem = base64.b64decode(ca).decode()
+        assert pem.startswith("-----BEGIN CERTIFICATE-----\n")
+        assert pem.rstrip().endswith("-----END CERTIFICATE-----")
+        assert "current-context: " in kc and rec["cluster_name"] in kc
+        assert rec["_ledger"]["kube_token"] == tok
+        assert rec["_detect"] == "search"

@@ -72,7 +72,7 @@ class ApiTokenType(CanaryType):
     def add_arguments(self, p: argparse.ArgumentParser) -> None:
         p.add_argument("--provider", default="github", choices=_PROVIDERS,
                        help="Token shape to mimic (default: github). "
-                            "'random' mixes providers across the batch.")
+                            "Use --mix to mix providers across the batch.")
         p.add_argument("--mix", action="store_true",
                        help="Ignore --provider and pick a random provider per "
                             "token, for a realistic mixed .env/secret store.")

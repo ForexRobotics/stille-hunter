@@ -64,3 +64,18 @@ def test_github_marker_selection(tmp_path):
     assert "aws_access_key_id" in markers
     assert "aws_secret_access_key" in markers
     assert "record_id" in markers   # record_id is in the default searchable set
+
+
+def test_github_searches_azure_ids_but_not_tenant(tmp_path):
+    load_plugins()
+    gh = _REGISTRY["github"](token="x")
+    path = _write_ledger(tmp_path, [{
+        "record_id": "abc123", "seed_tag": "t", "detect": "search",
+        "azure_client_id": "11111111-2222-3333-4444-555555555555",
+        "azure_tenant_id": "66666666-7777-8888-9999-000000000000",
+        "azure_client_secret": "Ab1Q~xxxxxxxxxxxxxxxxxxxxxxxxxxxxabc123",
+    }])
+    markers = gh._markers(load_ledger(path, include_inbox=False)[0])
+    assert "azure_client_secret" in markers
+    assert "azure_client_id" in markers
+    assert "azure_tenant_id" not in markers   # shared across a tenant: not unique

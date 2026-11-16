@@ -16,12 +16,14 @@ for it, trace a hit back to where it was planted.
 
 ## v0.2 — more things to plant
 
-- New canary types: `mcp_config`, `azure_credential`, `kubeconfig`, `db_dump`.
+- New canary types: `mcp_config`, `azure_credential`, `kubeconfig`.
 - Publish to PyPI (`pip install stille-hunter`).
 - CI: run the test suite and check DCO sign-off on every pull request.
 
 ## v0.3 — more places to look, and tell me when it hits
 
+- SQL output that drops straight into a database (plain SQL and a Laravel
+  seeder path), and a `db_dump` canary type built on it.
 - New free sources: GitLab code search, public paste sites.
 - Notifications when a canary is found (email, webhook for Slack / Discord).
 - A guide for running `check` unattended (cron, GitHub Actions).

@@ -278,9 +278,10 @@ def main(argv=None):
         sys.stderr.write(f"WARNING: could not load source plugin {prob}\n")
 
     if args.list_sources:
+        width = max(map(len, _REGISTRY))
         for name in sorted(_REGISTRY):
             cls = _REGISTRY[name]
-            print(f"{name:12} supports={','.join(cls.supports)}")
+            print(f"{name:{width}}  supports={','.join(cls.supports)}")
         return
 
     if not args.ledger:

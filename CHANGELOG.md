@@ -10,6 +10,15 @@ While the version is `0.x`, minor bumps may include breaking changes; see
 ## [Unreleased]
 
 ### Added
+- New canary types, all inert and found by searching:
+  - `azure_credential` — Azure service-principal client ID, tenant ID and a
+    client secret in the current Entra format (#5).
+  - `mcp_config` — an MCP `mcpServers` config block for the GitHub or Slack
+    server with a fake token; only official `@modelcontextprotocol`
+    packages are referenced (#2).
+  - `kubeconfig` — a complete kubeconfig with a bootstrap-format token whose
+    id is the canary token, a private-address server and a fake CA blob (#3).
+- The `github` source also searches `azure_client_id`.
 - CI on every pull request and push to `main`: ruff lint, the test suite on
   Python 3.10–3.14, and a DCO sign-off check on pull requests (#7).
 - ruff configuration in `pyproject.toml` with an explicitly pinned rule set
@@ -31,6 +40,10 @@ While the version is `0.x`, minor bumps may include breaking changes; see
 - README images and links are absolute URLs, so they also work on PyPI.
 - `tools/release.ps1` now stops after pushing the tag; the publish workflow
   creates the GitHub Release once the PyPI upload has succeeded.
+
+### Fixed
+- `api_token --provider` help named a non-existent `random` choice; the
+  option for mixing providers is `--mix`.
 
 ## [0.1.0] - 2026-11-12
 
