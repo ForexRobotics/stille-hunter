@@ -1,5 +1,5 @@
 {
-  "_comment": "Copy this to config.json (gitignored) and fill in real values. Pass with: stille-hunter check <ledger> --sources hibp --config config.json",
+  "_comment": "Copy this to a private folder (e.g. ~/.stille/config.json, never a repository) and fill in real values. Pass with: stille-hunter check <ledger> --sources hibp,github --config ~/.stille/config.json. Remove the channels under \"notify\" you do not use.",
   "hibp": {
     "api_key": "YOUR_32_CHAR_HIBP_API_KEY_HERE",
     "user_agent": "stille-hunter-yourorg",
@@ -10,5 +10,22 @@
     "token": "YOUR_GITHUB_PAT_HERE",
     "user_agent": "stille-hunter-yourorg",
     "min_interval": 6.5
+  },
+  "notify": {
+    "webhook": {
+      "url": "https://hooks.slack.com/services/YOUR/WEBHOOK/URL"
+    },
+    "email": {
+      "host": "smtp.example.org",
+      "port": 587,
+      "security": "starttls",
+      "username": "YOUR_SMTP_USER",
+      "password": "YOUR_SMTP_PASSWORD",
+      "from": "alerts@example.org",
+      "to": [
+        "secops@example.org"
+      ]
+    },
+    "on_errors": true
   }
 }

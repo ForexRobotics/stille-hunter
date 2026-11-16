@@ -14,19 +14,20 @@ Pluggable canary types (`member`, `aws_key`, `api_token`) and check sources
 (`hibp`, `github`), tied together by a secret ledger. Plant a canary, search
 for it, trace a hit back to where it was planted.
 
-## v0.2 — more things to plant
+## v0.2 — more things to plant (released)
 
 - New canary types: `mcp_config`, `azure_credential`, `kubeconfig`.
 - Publish to PyPI (`pip install stille-hunter`).
 - CI: run the test suite and check DCO sign-off on every pull request.
 
-## v0.3 — more places to look, and tell me when it hits
+## v0.3 — tell me when it hits
 
-- SQL output that drops straight into a database (plain SQL and a Laravel
-  seeder path), and a `db_dump` canary type built on it.
-- New free sources: GitLab code search, public paste sites.
-- Notifications when a canary is found (email, webhook for Slack / Discord).
-- A guide for running `check` unattended (cron, GitHub Actions).
+- Notifications when a canary is found, or when a source fails (email, and a
+  webhook for Slack / Discord / anything else).
+- A guide for running `check` unattended (cron, Windows Task Scheduler,
+  GitHub Actions).
+- SQL and JSON output that drop straight into a database (plain SQL and a
+  Laravel seeder path), and a `db_dump` canary type built on them.
 
 Goal: plant, forget, and get told when something leaks.
 
@@ -52,6 +53,17 @@ Goal: plant, forget, and get told when something leaks.
   contracts as the public API.
 - Traditional Chinese (Taiwan) locale (`--locale zh-TW`).
 - Complete user and plugin-author documentation.
+
+## More places to look (not yet scheduled)
+
+Every source must be an official or public lookup that never downloads leaked
+data. Research for v0.3 found that paste sites offer no such search, and that
+GitLab's code search cannot span all of GitLab.com. What remains:
+
+- A web search source using the Brave Search API, covering paste sites and the
+  open web as far as the engine has indexed them (paid per query).
+- A source for your own GitLab - a self-managed instance or your groups - to
+  find canaries copied into your own repositories before they leak further.
 
 ## Proprietary sources (separate package)
 
