@@ -177,8 +177,9 @@ def main(argv=None):
     known, _ = pre.parse_known_args(argv)
 
     if known.list_types:
+        width = max(map(len, _TYPES))
         for name in sorted(_TYPES):
-            print(f"{name:12} {_TYPES[name].description}")
+            print(f"{name:{width}}  {_TYPES[name].description}")
         return
 
     if known.type not in _TYPES:

@@ -57,7 +57,7 @@ _SEARCHABLE = (
 @register
 class GithubSource(CheckSource):
     name = "github"
-    supports = ("record_id", "password_hash")  # informational; see _markers()
+    supports = _SEARCHABLE   # the marker kinds _markers() picks from
 
     def __init__(self, **config):
         super().__init__(**config)
