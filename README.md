@@ -65,6 +65,7 @@ files or CI variables where the GitHub source will catch it if it leaks.
 stille-hunter generate --list-types                       # see all types
 stille-hunter generate --type api_token --provider github # a fake GitHub PAT
 stille-hunter generate --type aws_key                     # a fake AWS key pair
+stille-hunter generate --type kubeconfig                  # a fake kubeconfig
 ```
 
 | type | plants | detect |
@@ -72,6 +73,9 @@ stille-hunter generate --type aws_key                     # a fake AWS key pair
 | `member` | a full member record (name, address, card, email, ...) | inbox + search |
 | `aws_key` | an inert AWS access-key pair | search |
 | `api_token` | an inert API token (GitHub / OpenAI / Stripe / Slack / generic) | search |
+| `azure_credential` | an inert Azure service-principal credential (client ID, tenant ID, secret) | search |
+| `mcp_config` | an MCP server config (`mcpServers` block) with an inert token | search |
+| `kubeconfig` | a kubeconfig with an inert token and a private-address server | search |
 
 Add a type by dropping a module in `stille_hunter/types/`; the engine never
 changes. Each token is inert — it authenticates to nothing — with a unique
