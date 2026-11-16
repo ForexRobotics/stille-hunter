@@ -9,6 +9,8 @@ While the version is `0.x`, minor bumps may include breaking changes; see
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-11-16
+
 ### Added
 - Database-ready output for any canary type (#20):
   - `--format sql` writes `INSERT` statements (`--dialect mysql|postgres`,
@@ -112,6 +114,7 @@ and search-only — it never touches anyone else's systems.
 - Apache-2.0 license; DCO sign-off contribution workflow (`DCO`,
   `CONTRIBUTING.md`); project overview and "human-directed, AI-built" diagrams.
 
-[Unreleased]: https://github.com/ForexRobotics/stille-hunter/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/ForexRobotics/stille-hunter/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/ForexRobotics/stille-hunter/releases/tag/v0.3.0
 [0.2.0]: https://github.com/ForexRobotics/stille-hunter/releases/tag/v0.2.0
 [0.1.0]: https://github.com/ForexRobotics/stille-hunter/releases/tag/v0.1.0
