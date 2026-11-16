@@ -22,6 +22,10 @@ $repoSlug = "ForexRobotics/stille-hunter"
 $initPath = "src/stille_hunter/__init__.py"
 $changelog = "CHANGELOG.md"
 
+# Always read and write UTF-8 explicitly. Windows PowerShell 5.1 otherwise
+# reads BOM-less files in the system code page (cp932 on Japanese Windows),
+# which would turn characters like an em dash into mojibake and write the
+# damage back into CHANGELOG.md.
 function Write-NoBom($path, $text) {
     # resolve to an absolute path WITHOUT requiring the file to exist yet
     if ([System.IO.Path]::IsPathRooted($path)) { $full = $path }
@@ -35,7 +39,7 @@ if (-not (Test-Path $initPath)) {
 }
 
 # --- current version --------------------------------------------------------
-$initText = Get-Content $initPath -Raw
+$initText = Get-Content $initPath -Raw -Encoding UTF8
 if ($initText -notmatch '__version__\s*=\s*"(\d+)\.(\d+)\.(\d+)"') {
     Write-Host "Could not find __version__ in $initPath." -ForegroundColor Red
     exit 1
@@ -65,7 +69,7 @@ if (git tag --list "v$newStr") {
 # Safety: if this version already has a CHANGELOG section, it was released (or
 # hand-written, like the first 0.1.0). Re-cutting it would duplicate the entry.
 # Tag such a version manually instead (see RELEASING.md).
-if ((Get-Content $changelog -Raw) -match "## \[$([regex]::Escape($newStr))\]") {
+if ((Get-Content $changelog -Raw -Encoding UTF8) -match "## \[$([regex]::Escape($newStr))\]") {
     Write-Host "CHANGELOG already has a [$newStr] section." -ForegroundColor Red
     Write-Host "That version is already written up. To tag it, do it manually:" -ForegroundColor Yellow
     Write-Host "    git tag v$newStr; git push origin v$newStr" -ForegroundColor Yellow
@@ -78,7 +82,7 @@ $newInit = $initText -replace '__version__\s*=\s*"\d+\.\d+\.\d+"', "__version__ 
 
 # --- 2. rewrite CHANGELOG ---------------------------------------------------
 if (-not (Test-Path $changelog)) { Write-Host "No $changelog found." -ForegroundColor Red; exit 1 }
-$cl = Get-Content $changelog -Raw
+$cl = Get-Content $changelog -Raw -Encoding UTF8
 
 # move the Unreleased notes into a dated section for the new version
 $unrelHeader = "## [Unreleased]"
