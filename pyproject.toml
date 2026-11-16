@@ -29,10 +29,19 @@ Changelog = "https://github.com/ForexRobotics/stille-hunter/blob/main/CHANGELOG.
 stille-hunter = "stille_hunter.cli:main"
 
 [project.optional-dependencies]
-dev = ["pytest"]
+dev = ["pytest", "ruff"]
 
 [tool.hatch.version]
 path = "src/stille_hunter/__init__.py"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/stille_hunter"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+
+[tool.ruff.lint]
+# Pinned explicitly so a ruff upgrade never changes what CI enforces.
+# E/W: pycodestyle, F: pyflakes, I: import order, B: likely bugs (bugbear).
+select = ["E", "F", "W", "I", "B"]

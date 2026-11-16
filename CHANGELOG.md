@@ -9,6 +9,17 @@ While the version is `0.x`, minor bumps may include breaking changes; see
 
 ## [Unreleased]
 
+### Added
+- CI on every pull request and push to `main`: ruff lint, the test suite on
+  Python 3.9–3.13, and a DCO sign-off check on pull requests (#7).
+- ruff configuration in `pyproject.toml` with an explicitly pinned rule set
+  (E, F, W, I, B; line length 100), and ruff in the `dev` extra.
+
+### Changed
+- Code tidied to pass the lint rules: sorted imports, shorter lines, a shared
+  helper for North American phone numbers, and an unused variable removed.
+  No behaviour change.
+
 ## [0.1.0] - 2026-11-12
 
 First tagged release. A self-contained leak-canary tool: plant realistic fake

@@ -10,7 +10,6 @@ import sys
 
 from . import __version__
 
-
 _USAGE = """\
 stille-hunter <command> [options]
 

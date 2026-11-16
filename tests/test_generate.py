@@ -5,7 +5,7 @@ Run with: pytest
 import argparse
 import datetime
 
-from stille_hunter.generate import load_type_plugins, _TYPES
+from stille_hunter.generate import _TYPES, load_type_plugins
 from stille_hunter.types import member as member_mod
 
 

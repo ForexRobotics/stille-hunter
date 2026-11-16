@@ -24,7 +24,7 @@ import argparse
 import secrets
 from typing import Iterable
 
-from ..generate import CanaryType, register_type, new_token
+from ..generate import CanaryType, new_token, register_type
 
 # AWS key-ID prefixes. AKIA = long-term IAM user access key (the kind that most
 # often gets committed by mistake). Others exist but AKIA is the realistic pick.
