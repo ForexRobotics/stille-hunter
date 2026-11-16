@@ -140,6 +140,19 @@ breach includes one, so run this on a schedule.
 stille-hunter check --list-sources   # see available sources
 ```
 
+### 3. Get told when one surfaces
+
+Add a `notify` section to the config - a Slack, Discord or any HTTPS webhook,
+and/or email - and `check` sends a message when it finds a hit, or when a
+source fails so the check is not silently broken. A clean run sends nothing.
+
+```bash
+stille-hunter check --notify-test --config ~/.stille/config.json   # try it
+```
+
+Run `check` daily from cron, Windows Task Scheduler or a private GitHub
+Actions workflow: see [Running check unattended](https://github.com/ForexRobotics/stille-hunter/blob/main/docs/unattended.md).
+
 ## Sources
 
 A source is a place a leaked canary might surface. Each is a small plugin

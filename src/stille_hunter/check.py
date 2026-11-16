@@ -34,6 +34,8 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Iterable
 
+from . import notify
+
 
 # ---------------------------------------------------------------------------
 #  Data carried through the pipeline
@@ -272,6 +274,11 @@ def main(argv=None):
     p.add_argument("--out", help="Write hits as JSONL to this path (default: stdout summary).")
     p.add_argument("--list-sources", action="store_true",
                    help="List registered sources and exit.")
+    p.add_argument("--no-notify", action="store_true",
+                   help="Do not send notifications for this run, even if configured.")
+    p.add_argument("--notify-test", action="store_true",
+                   help="Send a test message to the channels under \"notify\" in "
+                        "--config, then exit. No ledger needed.")
     args = p.parse_args(argv)
 
     for prob in plugin_problems:
@@ -284,9 +291,6 @@ def main(argv=None):
             print(f"{name:{width}}  supports={','.join(cls.supports)}")
         return
 
-    if not args.ledger:
-        p.error("a ledger path is required (or use --list-sources)")
-
     source_config = {}
     if args.config:
         try:
@@ -298,6 +302,21 @@ def main(argv=None):
         except json.JSONDecodeError as e:
             sys.stderr.write(f"ERROR: config file is not valid JSON ({args.config}): {e}\n")
             sys.exit(2)
+    notify_cfg = source_config.get("notify") or {}
+
+    if args.notify_test:
+        if not notify.channels(notify_cfg):
+            sys.stderr.write('ERROR: no "notify" webhook or email in the config\n')
+            sys.exit(2)
+        problems = notify.notify_test(notify_cfg)
+        for prob in problems:
+            sys.stderr.write(f"ERROR: notification failed: {prob}\n")
+        if not problems:
+            print(f"test notification sent via {', '.join(notify.channels(notify_cfg))}")
+        sys.exit(1 if problems else 0)
+
+    if not args.ledger:
+        p.error("a ledger path is required (or use --list-sources / --notify-test)")
 
     try:
         canaries = load_ledger(args.ledger, args.include_inbox)
@@ -323,6 +342,14 @@ def main(argv=None):
         for h in hits:
             print(f"  HIT {h.canary.record_id} [{h.source}] {h.token_kind}="
                   f"{h.token} @ {h.location}")
+
+    if notify_cfg and not args.no_notify:
+        sent, problems = notify.notify_run(notify_cfg, hits, skipped,
+                                           len(canaries), source_names)
+        for prob in problems:
+            sys.stderr.write(f"WARNING: notification failed: {prob}\n")
+        if sent and not problems:
+            print(f"  notified via {', '.join(notify.channels(notify_cfg))}")
 
     # non-zero exit when something leaked, so cron/CI can alert on it
     sys.exit(1 if hits else 0)

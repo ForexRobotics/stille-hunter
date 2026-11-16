@@ -19,6 +19,15 @@ While the version is `0.x`, minor bumps may include breaking changes; see
   - `--ledger-out` writes the ledger to its own path (e.g. private storage),
     so it does not land next to seeded data inside an app.
   - Seeded output never carries anything that marks the rows as canaries.
+- Notifications from `check` (#10): a Slack, Discord or generic HTTPS
+  webhook and/or email (SMTP, STARTTLS or SSL), configured under `notify` in
+  the config file. Sent when a run finds hits, and when a source fails so an
+  unattended check cannot break silently (`"on_errors": false` turns that
+  off). Messages never include canary values. `--notify-test` sends a test
+  message; `--no-notify` skips notifying for one run.
+- Guide to running `check` unattended - cron, Windows Task Scheduler, and a
+  scheduled GitHub Actions workflow in a private repository - with the config
+  and ledgers kept out of any repository (`docs/unattended.md`, #11).
 - `db_dump` canary type: plausible table rows with a searchable reference
   code (e.g. `CUS-A3F8C10421`) that also appears in a free-text note; the
   `github` source searches it as `marker` (#20, formerly #4).
