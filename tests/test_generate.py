@@ -151,3 +151,31 @@ def test_mcp_config_only_uses_official_scoped_packages():
         args = json.loads(rec["mcp_config"])["mcpServers"][rec["mcp_server"]]["args"]
         packages = [a for a in args if not a.startswith("-")]
         assert packages and all(p.startswith("@modelcontextprotocol/") for p in packages)
+
+
+# ---- kubeconfig type ------------------------------------------------------
+def test_kubeconfig_token_server_and_ca():
+    import base64
+    import ipaddress
+    import re
+    from urllib.parse import urlparse
+    for rec in _make("kubeconfig", count=50):
+        kc = rec["kubeconfig"]
+        tok = rec["kube_token"]
+        # bootstrap-token format, and its id part IS the canary token
+        assert re.fullmatch(r"[a-z0-9]{6}\.[a-z0-9]{16}", tok)
+        assert tok.split(".")[0] == rec["record_id"]
+        assert f"    token: {tok}\n" in kc
+        # server is a private address: never a real, reachable cluster
+        server = re.search(r"^    server: (\S+)$", kc, re.M).group(1)
+        url = urlparse(server)
+        assert url.scheme == "https" and url.port == 6443
+        assert ipaddress.ip_address(url.hostname).is_private
+        # CA data decodes to a PEM-shaped block
+        ca = re.search(r"certificate-authority-data: (\S+)", kc).group(1)
+        pem = base64.b64decode(ca).decode()
+        assert pem.startswith("-----BEGIN CERTIFICATE-----\n")
+        assert pem.rstrip().endswith("-----END CERTIFICATE-----")
+        assert "current-context: " in kc and rec["cluster_name"] in kc
+        assert rec["_ledger"]["kube_token"] == tok
+        assert rec["_detect"] == "search"
