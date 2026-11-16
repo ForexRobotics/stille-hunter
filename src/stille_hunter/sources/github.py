@@ -49,6 +49,7 @@ _SEARCHABLE = (
     "kube_token",
     "azure_client_secret",
     "azure_client_id",
+    "marker",
     "password_hash",
     "record_id",
 )

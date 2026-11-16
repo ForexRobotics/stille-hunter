@@ -30,10 +30,13 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import os
 import secrets
 import sys
 from datetime import datetime, timezone
 from typing import Iterable
+
+from . import output
 
 
 # ---------------------------------------------------------------------------
@@ -132,7 +135,7 @@ def _seeded_view(rec: dict) -> dict:
     return {k: v for k, v in rec.items() if not k.startswith("_")}
 
 
-def _ledger_row(rec: dict, seed_tag: str) -> dict:
+def _ledger_row(rec: dict, seed_tag: str, table: str | None = None) -> dict:
     row = {
         "record_id": rec["record_id"],
         "seed_tag": seed_tag,
@@ -140,27 +143,33 @@ def _ledger_row(rec: dict, seed_tag: str) -> dict:
     }
     # the type's declared searchable markers
     row.update(rec.get("_ledger", {}))
+    if table:
+        row["table"] = table   # where the rows were planted (not searched for)
     row["created_at"] = datetime.now(timezone.utc).isoformat()
     return row
 
 
-def write_jsonl(records, seed_tag, sf, lf):
-    for rec in records:
-        sf.write(json.dumps(_seeded_view(rec), ensure_ascii=False) + "\n")
-        lf.write(json.dumps(_ledger_row(rec, seed_tag), ensure_ascii=False) + "\n")
+def write_jsonl(rows: list[dict], f) -> None:
+    for row in rows:
+        f.write(json.dumps(row, ensure_ascii=False) + "\n")
 
 
-def write_csv(records, seed_tag, sf, lf):
-    records = list(records)
-    if not records:
+def write_csv(rows: list[dict], f) -> None:
+    if not rows:
         return
-    sw = csv.DictWriter(sf, fieldnames=list(_seeded_view(records[0]).keys()))
-    sw.writeheader()
-    lw = csv.DictWriter(lf, fieldnames=list(_ledger_row(records[0], seed_tag).keys()))
-    lw.writeheader()
-    for rec in records:
-        sw.writerow(_seeded_view(rec))
-        lw.writerow(_ledger_row(rec, seed_tag))
+    w = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
+    w.writeheader()
+    for row in rows:
+        w.writerow(row)
+
+
+#: --format -> (seeded file extension, ledger extension)
+FORMATS = {
+    "jsonl": ("jsonl", "jsonl"),
+    "csv": ("csv", "csv"),
+    "json": ("json", "jsonl"),   # a JSON array, e.g. for a Laravel seeder
+    "sql": ("sql", "jsonl"),     # INSERT statements
+}
 
 
 # ---------------------------------------------------------------------------
@@ -199,24 +208,56 @@ def main(argv=None):
     p.add_argument("--count", type=int, default=10)
     p.add_argument("--tag", default="default",
                    help="Seed tag: where these canaries will be planted.")
-    p.add_argument("--format", default="jsonl", choices=["jsonl", "csv"])
-    p.add_argument("--out", default="canary_seeded")
+    p.add_argument("--format", default="jsonl", choices=list(FORMATS),
+                   help="jsonl (default), csv, json (a JSON array, e.g. for a Laravel "
+                        "seeder), or sql (INSERT statements; needs --table).")
+    p.add_argument("--table", default=None,
+                   help="Table the rows will be planted in. Required for --format sql; "
+                        "recorded in the ledger with any format.")
+    p.add_argument("--dialect", default="mysql", choices=list(output.DIALECTS),
+                   help="SQL dialect for --format sql (default: mysql).")
+    p.add_argument("--columns", default=None,
+                   help="Select and rename seeded fields, in order: "
+                        "'field=column,field2=column2' (a bare 'field' keeps its name).")
+    p.add_argument("--out", default="canary_seeded",
+                   help="Seeded file path without extension (default: canary_seeded).")
+    p.add_argument("--ledger-out", default=None,
+                   help="Where to write the ledger (default: next to the seeded file). "
+                        "Keep it outside any app or repository; missing folders are created.")
     canary_type.add_arguments(p)   # the type's own options
     args = p.parse_args(argv)
 
     try:
+        if args.format == "sql" and not args.table:
+            raise ValueError("--format sql needs --table")
+        table = output.check_table(args.table) if args.table else None
+        pairs = output.parse_columns(args.columns) if args.columns else None
         recs = list(canary_type.generate(args, args.count))
+        seeded = [output.apply_columns(_seeded_view(r), pairs) for r in recs]
     except ValueError as e:
         sys.stderr.write(f"ERROR: {e}\n")
         sys.exit(2)
+    ledger = [_ledger_row(r, args.tag, table) for r in recs]
 
-    ext = args.format
-    seeded_path, ledger_path = f"{args.out}.{ext}", f"{args.out}.ledger.{ext}"
+    seeded_ext, ledger_ext = FORMATS[args.format]
+    seeded_path = f"{args.out}.{seeded_ext}"
+    ledger_path = (os.path.expanduser(args.ledger_out) if args.ledger_out
+                   else f"{args.out}.ledger.{ledger_ext}")
+    if os.path.dirname(ledger_path):
+        os.makedirs(os.path.dirname(ledger_path), exist_ok=True)
     inbox_n = sum(1 for r in recs if r.get("_detect") == "inbox")
 
-    with open(seeded_path, "w", encoding="utf-8", newline="") as sf, \
-         open(ledger_path, "w", encoding="utf-8", newline="") as lf:
-        (write_jsonl if ext == "jsonl" else write_csv)(recs, args.tag, sf, lf)
+    with open(seeded_path, "w", encoding="utf-8", newline="") as sf:
+        if args.format == "sql":
+            output.write_sql(seeded, table, args.dialect, sf)
+        elif args.format == "json":
+            output.write_json_array(seeded, sf)
+        elif args.format == "csv":
+            write_csv(seeded, sf)
+        else:
+            write_jsonl(seeded, sf)
+    with open(ledger_path, "w", encoding="utf-8", newline="") as lf:
+        (write_csv if ledger_ext == "csv" else write_jsonl)(ledger, lf)
 
     detail = (f"({inbox_n} inbox-detect, {len(recs)-inbox_n} search-only)"
               if inbox_n else "(search-only)")

@@ -76,10 +76,54 @@ stille-hunter generate --type kubeconfig                  # a fake kubeconfig
 | `azure_credential` | an inert Azure service-principal credential (client ID, tenant ID, secret) | search |
 | `mcp_config` | an MCP server config (`mcpServers` block) with an inert token | search |
 | `kubeconfig` | a kubeconfig with an inert token and a private-address server | search |
+| `db_dump` | plausible table rows with a searchable reference code, for planting in a database | search |
 
 Add a type by dropping a module in `stille_hunter/types/`; the engine never
 changes. Each token is inert — it authenticates to nothing — with a unique
 canary token woven into its tail so a leak traces back through the ledger.
+
+#### Loading canaries into a database
+
+`--format sql` writes `INSERT` statements and `--format json` writes a JSON
+array, so canaries go straight into a table. stille-hunter never connects to
+your database: you run the output with your own client, inside your own
+transaction. Use `--columns` to select and rename fields so they match your
+schema (`field=column`, in order; a bare `field` keeps its name).
+
+```bash
+# MySQL (default) or PostgreSQL INSERTs
+stille-hunter generate --type member --count 20 --format sql --table members \
+    --columns "user_id,full_name=name,email,password_hash=password" --tag www-members
+stille-hunter generate --type db_dump --format sql --dialect postgres --table app.customers
+```
+
+For a **Laravel** app, write JSON and load it from a seeder:
+
+```bash
+stille-hunter generate --type member --count 20 --format json --table members \
+    --columns "user_id,full_name=name,email,password_hash=password" \
+    --out storage/app/canary_seeded --tag www-members \
+    --ledger-out ~/.stille/ledgers/www-members.ledger.jsonl
+```
+
+```php
+// database/seeders/CanarySeeder.php  ->  php artisan db:seed --class=CanarySeeder
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+
+class CanarySeeder extends Seeder
+{
+    public function run(): void
+    {
+        $rows = json_decode(file_get_contents(storage_path('app/canary_seeded.json')), true);
+        DB::table('members')->insert($rows);
+    }
+}
+```
+
+`--ledger-out` writes the ledger straight to private storage, so it never lands
+inside the app. The seeded file is the list of canary rows: delete it once loaded. The seeded output carries no sign that the rows
+are canaries.
 
 ### 2. Check for leaks
 
