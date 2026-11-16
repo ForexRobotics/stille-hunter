@@ -7,7 +7,7 @@ name = "stille-hunter"
 dynamic = ["version"]   # single source of truth: src/stille_hunter/__init__.py
 description = "Generate leak-canary records and check them against leak sources."
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 license = "Apache-2.0"
 authors = [{ name = "Forex Robotics Co., Ltd." }]
 keywords = ["security", "canary", "breach", "leak-detection", "honeytoken"]
@@ -39,7 +39,7 @@ packages = ["src/stille_hunter"]
 
 [tool.ruff]
 line-length = 100
-target-version = "py39"
+target-version = "py310"
 
 [tool.ruff.lint]
 # Pinned explicitly so a ruff upgrade never changes what CI enforces.

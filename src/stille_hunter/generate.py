@@ -47,7 +47,7 @@ def new_token() -> str:
 def weighted_choice(options, weights):
     r = secrets.randbelow(sum(weights))
     upto = 0
-    for opt, w in zip(options, weights):
+    for opt, w in zip(options, weights, strict=True):
         upto += w
         if r < upto:
             return opt

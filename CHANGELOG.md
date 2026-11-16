@@ -11,11 +11,13 @@ While the version is `0.x`, minor bumps may include breaking changes; see
 
 ### Added
 - CI on every pull request and push to `main`: ruff lint, the test suite on
-  Python 3.9–3.13, and a DCO sign-off check on pull requests (#7).
+  Python 3.10–3.14, and a DCO sign-off check on pull requests (#7).
 - ruff configuration in `pyproject.toml` with an explicitly pinned rule set
   (E, F, W, I, B; line length 100), and ruff in the `dev` extra.
 
 ### Changed
+- Minimum supported Python is now 3.10. Python 3.9 reached end of life in
+  October 2025 and is no longer available on current CI runners.
 - Code tidied to pass the lint rules: sorted imports, shorter lines, a shared
   helper for North American phone numbers, and an unused variable removed.
   No behaviour change.

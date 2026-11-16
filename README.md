@@ -23,7 +23,7 @@ and waits.
 pip install stille-hunter
 ```
 
-Requires Python 3.9+. The core tool has no third-party dependencies.
+Requires Python 3.10+. The core tool has no third-party dependencies.
 
 ## Use
 

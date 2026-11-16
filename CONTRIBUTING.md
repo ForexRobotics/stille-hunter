@@ -66,7 +66,7 @@ stille-hunter sets a quiet trap and waits. Keep contributions inside that line:
    description, e.g. `Closes #12` (or `Fixes #12` / `Resolves #12`). When the PR
    merges, GitHub closes that issue automatically and the project board moves
    both the issue and the PR to Done.
-6. CI runs ruff, the test suite on Python 3.9–3.13, and a DCO check that fails
+6. CI runs ruff, the test suite on Python 3.10–3.14, and a DCO check that fails
    the PR if any commit lacks `Signed-off-by`. A human reviews and merges.
 
 ## Questions
