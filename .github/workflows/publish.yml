@@ -5,11 +5,17 @@ name: Publish
 #   1. check the tag matches __version__, then build the sdist and wheel.
 #   2. publish to PyPI via Trusted Publishing (OIDC) - no stored token.
 #   3. create the GitHub Release from the matching CHANGELOG section.
+#   4. announce it on Discord (only if the DISCORD_WEBHOOK secret is set).
 #
 # One-time PyPI setup: add a "pending publisher" at
 # https://pypi.org/manage/account/publishing/ with:
 #   PyPI project name = stille-hunter, owner = ForexRobotics,
 #   repository = stille-hunter, workflow = publish.yml, environment = pypi
+#
+# One-time Discord setup (optional - the announce step is skipped without it):
+#   In the announcement channel: Edit Channel -> Integrations -> Webhooks ->
+#   New Webhook -> Copy Webhook URL. Store it as the repository secret
+#   DISCORD_WEBHOOK:  gh secret set DISCORD_WEBHOOK --repo ForexRobotics/stille-hunter
 #
 # Third-party actions are pinned to full commit SHAs so a moved or hijacked
 # tag cannot change what runs here; Dependabot proposes updates. Runners are
@@ -106,3 +112,14 @@ jobs:
             --title "$TITLE" --notes-file notes.md \
           || gh release edit "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" \
             --title "$TITLE" --notes-file notes.md
+      - name: Announce to Discord
+        # Runs only when the DISCORD_WEBHOOK repository secret is set.
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          VERSION: ${{ steps.notes.outputs.version }}
+        if: ${{ env.DISCORD_WEBHOOK != '' }}
+        run: |
+          RELEASE_URL="https://github.com/$GITHUB_REPOSITORY/releases/tag/$GITHUB_REF_NAME"
+          python3 .github/scripts/discord_payload.py "$VERSION" notes.md "$RELEASE_URL" > payload.json
+          curl -sS --fail-with-body -X POST -H "Content-Type: application/json" \
+            -d @payload.json "$DISCORD_WEBHOOK"

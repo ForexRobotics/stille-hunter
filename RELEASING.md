@@ -73,7 +73,8 @@ Pushing a `vX.Y.Z` tag starts `.github/workflows/publish.yml`, which:
 2. runs the tests and builds the sdist and wheel,
 3. publishes to PyPI with **Trusted Publishing** — GitHub proves its identity
    to PyPI with a short-lived OIDC token, so no PyPI token is stored anywhere,
-4. creates the GitHub Release, using this version's CHANGELOG section as notes.
+4. creates the GitHub Release, using this version's CHANGELOG section as notes,
+5. announces the release on Discord, if a webhook is configured (below).
 
 Watch it at <https://github.com/ForexRobotics/stille-hunter/actions/workflows/publish.yml>.
 If a step fails before the PyPI upload, nothing is published: fix it, delete
@@ -90,3 +91,12 @@ patch version instead.
   permanent.
 - **GitHub**: the `pypi` environment is created automatically on the first run.
   Optionally restrict it to `v*` tags under Settings -> Environments -> pypi.
+- **Discord** (optional): in the announcement channel, Edit Channel ->
+  Integrations -> Webhooks -> New Webhook -> Copy Webhook URL, then store it
+  as a repository secret (gh prompts for the value, so it stays out of your
+  shell history):
+
+      gh secret set DISCORD_WEBHOOK --repo ForexRobotics/stille-hunter
+
+  Without the secret the announce step is skipped. The webhook URL lets anyone
+  post to the channel: keep it only in the secret, never in a file.
