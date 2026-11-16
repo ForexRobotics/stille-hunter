@@ -47,6 +47,9 @@ While the version is `0.x`, minor bumps may include breaking changes; see
 ### Fixed
 - `api_token --provider` help named a non-existent `random` choice; the
   option for mixing providers is `--mix`.
+- `tools/release.ps1` read `CHANGELOG.md` in the Windows code page, which
+  would have turned non-ASCII characters into mojibake on release; it now
+  reads and writes UTF-8 explicitly.
 
 ## [0.1.0] - 2026-11-12
 
