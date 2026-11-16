@@ -307,7 +307,6 @@ def main(argv=None):
 
     hits, skipped = run_check(canaries, source_names, source_config)
 
-    inbox_held = sum(1 for _ in ())  # (informational; inbox excluded at load)
     print(f"checked {len(canaries)} canaries against {len(source_names)} "
           f"source(s): {len(hits)} hit(s)")
     for name, reason in skipped:

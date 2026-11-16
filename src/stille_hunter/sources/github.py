@@ -30,7 +30,7 @@ import urllib.parse
 import urllib.request
 from typing import Iterable
 
-from ..check import CheckSource, Hit, Canary, register
+from ..check import Canary, CheckSource, Hit, register
 
 _API = "https://api.github.com/search/code"
 _DEFAULT_UA = "stille-hunter (leak-canary self-check)"

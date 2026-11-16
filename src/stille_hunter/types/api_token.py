@@ -31,7 +31,7 @@ import argparse
 import secrets
 from typing import Iterable
 
-from ..generate import CanaryType, register_type, new_token
+from ..generate import CanaryType, new_token, register_type
 
 _B62 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
 _HEX = "0123456789abcdef"

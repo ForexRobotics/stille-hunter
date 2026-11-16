@@ -29,7 +29,7 @@ import urllib.parse
 import urllib.request
 from typing import Iterable
 
-from ..check import CheckSource, Hit, Canary, register
+from ..check import Canary, CheckSource, Hit, register
 
 _API = "https://haveibeenpwned.com/api/v3/breachedAccount/"
 _DEFAULT_UA = "stille-hunter (leak-canary self-check; +https://github.com/)"

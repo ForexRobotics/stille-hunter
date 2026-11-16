@@ -2,7 +2,7 @@
 """Tests for the check frame: ledger loading, extras, and source plumbing."""
 import json
 
-from stille_hunter.check import load_ledger, load_plugins, _REGISTRY
+from stille_hunter.check import _REGISTRY, load_ledger, load_plugins
 
 
 def _write_ledger(tmp_path, rows):

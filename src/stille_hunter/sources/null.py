@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from typing import Iterable
 
-from ..check import CheckSource, Hit, Canary, register
+from ..check import Canary, CheckSource, Hit, register
 
 
 @register

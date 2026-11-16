@@ -22,7 +22,12 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from typing import Callable, Iterable
 
-from ..generate import CanaryType, register_type, new_token, weighted_choice
+from ..generate import CanaryType, new_token, register_type, weighted_choice
+
+# --self-domain must look like a real domain and not a docs placeholder.
+_DOMAIN_RE = (r"[A-Za-z0-9]([A-Za-z0-9-]*[A-Za-z0-9])?"
+              r"(\.[A-Za-z0-9]([A-Za-z0-9-]*[A-Za-z0-9])?)+")
+_PLACEHOLDER_HINTS = ("example", "yourdomain", "placeholder", "ドメイン")
 
 # ============================================================================
 #  Name / place data per locale
@@ -187,14 +192,21 @@ def _ca_address():
 def _jp_phone():
     return f"080-{secrets.randbelow(9000)+1000}-{secrets.randbelow(9000)+1000}"
 
+def _nanp_phone():
+    """North American Numbering Plan number (shared by US and Canada)."""
+    area = secrets.randbelow(800) + 200
+    exchange = secrets.randbelow(900) + 100
+    line = secrets.randbelow(9000) + 1000
+    return f"+1 ({area}) {exchange}-{line}"
+
 def _us_phone():
-    return f"+1 ({secrets.randbelow(800)+200}) {secrets.randbelow(900)+100}-{secrets.randbelow(9000)+1000}"
+    return _nanp_phone()
 
 def _gb_phone():
     return f"+44 7{secrets.randbelow(900)+100} {secrets.randbelow(900000)+100000}"
 
 def _ca_phone():
-    return f"+1 ({secrets.randbelow(800)+200}) {secrets.randbelow(900)+100}-{secrets.randbelow(9000)+1000}"
+    return _nanp_phone()
 
 
 @dataclass
@@ -293,8 +305,9 @@ class MemberType(CanaryType):
         if not 0.0 <= args.self_ratio <= 1.0:
             raise ValueError("--self-ratio must be between 0 and 1")
         if args.self_domain:
-            if not re.fullmatch(r"[A-Za-z0-9]([A-Za-z0-9-]*[A-Za-z0-9])?(\.[A-Za-z0-9]([A-Za-z0-9-]*[A-Za-z0-9])?)+", args.self_domain) \
-                    or any(t in args.self_domain.lower() for t in ("example", "yourdomain", "placeholder", "ドメイン")):
+            looks_real = re.fullmatch(_DOMAIN_RE, args.self_domain)
+            is_placeholder = any(t in args.self_domain.lower() for t in _PLACEHOLDER_HINTS)
+            if not looks_real or is_placeholder:
                 raise ValueError(
                     f"--self-domain '{args.self_domain}' is not a real domain you "
                     "control. Pass a domain whose mail you can receive, or omit it "
