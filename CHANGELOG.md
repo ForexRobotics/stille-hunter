@@ -14,6 +14,11 @@ While the version is `0.x`, minor bumps may include breaking changes; see
   Python 3.10–3.14, and a DCO sign-off check on pull requests (#7).
 - ruff configuration in `pyproject.toml` with an explicitly pinned rule set
   (E, F, W, I, B; line length 100), and ruff in the `dev` extra.
+- Publishing to PyPI: pushing a `vX.Y.Z` tag checks the tag against the
+  version, runs the tests, publishes with Trusted Publishing (no stored
+  token), and creates the GitHub Release from the changelog (#6).
+- Dependabot keeps the pinned GitHub Actions up to date.
+- README badges, and PyPI classifiers for supported Python versions.
 
 ### Changed
 - Minimum supported Python is now 3.10. Python 3.9 reached end of life in
@@ -21,6 +26,11 @@ While the version is `0.x`, minor bumps may include breaking changes; see
 - Code tidied to pass the lint rules: sorted imports, shorter lines, a shared
   helper for North American phone numbers, and an unused variable removed.
   No behaviour change.
+- GitHub Actions pinned to full commit SHAs and runners pinned to
+  `ubuntu-24.04`, so neither can change what CI runs without a review.
+- README images and links are absolute URLs, so they also work on PyPI.
+- `tools/release.ps1` now stops after pushing the tag; the publish workflow
+  creates the GitHub Release once the PyPI upload has succeeded.
 
 ## [0.1.0] - 2026-11-12
 
