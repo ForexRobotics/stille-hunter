@@ -48,6 +48,7 @@ _SEARCHABLE = (
     "mcp_token",
     "kube_token",
     "azure_client_secret",
+    "azure_client_id",
     "password_hash",
     "record_id",
 )

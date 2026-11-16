@@ -110,3 +110,19 @@ def test_api_token_prefix_and_token_woven():
 def test_api_token_mix_spreads_providers():
     seen = {rec["provider"] for rec in _make("api_token", mix=True, count=200)}
     assert len(seen) >= 3, f"--mix should vary providers, saw {seen}"
+
+
+# ---- azure_credential type ------------------------------------------------
+def test_azure_credential_shape_and_token():
+    import re
+    import uuid
+    secret_re = re.compile(r"[A-Za-z0-9_~.]{3}\dQ~[A-Za-z0-9_~.-]{34}")
+    for rec in _make("azure_credential", count=50):
+        uuid.UUID(rec["azure_client_id"])
+        uuid.UUID(rec["azure_tenant_id"])
+        sec = rec["azure_client_secret"]
+        assert secret_re.fullmatch(sec), sec
+        assert sec.endswith(rec["record_id"])
+        assert rec["_detect"] == "search"
+        assert rec["_ledger"]["azure_client_secret"] == sec
+        assert rec["_ledger"]["azure_client_id"] == rec["azure_client_id"]
