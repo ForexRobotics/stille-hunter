@@ -61,14 +61,16 @@ python3 -m venv ~/.stille/venv
 chmod 600 ~/.stille/config.json ~/.stille/ledgers/*
 ```
 
-`~/.stille/check.sh` checks every ledger:
+`~/.stille/check.sh` checks every ledger in one run (one notification, one
+report):
 
 ```bash
 #!/bin/sh
-for ledger in "$HOME"/.stille/ledgers/*.ledger.jsonl; do
-  "$HOME"/.stille/venv/bin/stille-hunter check "$ledger" \
-    --sources hibp,github --config "$HOME"/.stille/config.json
-done
+echo "== $(date '+%Y-%m-%d %H:%M:%S')"
+mkdir -p "$HOME"/.stille/reports
+"$HOME"/.stille/venv/bin/stille-hunter check "$HOME"/.stille/ledgers/*.ledger.jsonl \
+  --sources hibp,github --config "$HOME"/.stille/config.json \
+  --report "$HOME"/.stille/reports/latest.html --report "$HOME"/.stille/reports/latest.json
 ```
 
 Then `chmod 700 ~/.stille/check.sh` and add a daily entry with `crontab -e`:
@@ -77,10 +79,8 @@ Then `chmod 700 ~/.stille/check.sh` and add a daily entry with `crontab -e`:
 17 6 * * * $HOME/.stille/check.sh >> $HOME/.stille/check.log 2>&1
 ```
 
-To keep a page you can open after each run, add
-`--report "$HOME/.stille/reports/$(basename "$ledger" .ledger.jsonl).html"` to
-the `check` line (create `~/.stille/reports` first). It is overwritten each
-run; add `--report ....json` too if a script or an AI assistant should read it.
+`latest.html` is a page you can open after each run, and `latest.json` the
+same for a script or an AI assistant; both are overwritten each run.
 
 ## 3b. Windows Task Scheduler
 

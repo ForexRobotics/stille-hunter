@@ -132,6 +132,9 @@ cp examples/config.example.json config.json   # add your API key(s)
 stille-hunter check canary_seeded.ledger.jsonl --sources hibp --config config.json
 ```
 
+Pass several ledgers (`check ledgers/*.ledger.jsonl ...`) to check them all in
+one run.
+
 Exit code is `1` if any canary was found leaked (so cron/CI can alert), `0` if
 clean, `2` on a usage error. Freshly-minted canaries read clean until a *new*
 breach includes one, so run this on a schedule.

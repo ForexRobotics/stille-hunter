@@ -14,6 +14,8 @@ While the version is `0.x`, minor bumps may include breaking changes; see
   HTML page (light and dark) or JSON, by extension; repeatable (#28). It shows
   hits without canary values, each source's outcome and coverage, and the
   canaries checked by seed tag and marker. `--report-title` sets its title.
+- `check` takes several ledgers and checks them together in one run (one
+  notification, one report).
 - Sources can describe what a run covered through `CheckSource.stats` (short
   scalar facts, shown as given in reports). `run_check(..., results=[])`
   returns a `SourceResult` per source; its return value is unchanged.
