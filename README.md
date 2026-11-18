@@ -140,6 +140,13 @@ breach includes one, so run this on a schedule.
 stille-hunter check --list-sources   # see available sources
 ```
 
+Add `--report run.html` (and/or `--report run.json`) for a report of the run:
+one self-contained page, light or dark, showing any hits, how each source
+fared (ok, skipped, or failed and why, plus what it covered) and which
+canaries were checked, by seed tag and marker. The JSON holds the same for
+scripts or an AI triage. Reports never contain canary values, but seed tags
+say where canaries are planted, so keep them private (written mode 0600).
+
 ### 3. Get told when one surfaces
 
 Add a `notify` section to the config - a Slack, Discord or any HTTPS webhook,

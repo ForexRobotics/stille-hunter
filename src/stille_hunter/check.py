@@ -34,7 +34,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Iterable
 
-from . import notify
+from . import notify, report
 
 
 # ---------------------------------------------------------------------------
@@ -112,6 +112,10 @@ class CheckSource:
 
     def __init__(self, **config):
         self.config = config
+        # Short facts about what this run covered, e.g. {"pages read": 12,
+        # "sites unreachable": 1}, shown as given in `check --report`. Fill
+        # it in check(). Never put canary values or leaked content here.
+        self.stats: dict[str, object] = {}
         # The frame sets this to a callable(done:int, total:int, note:str).
         # A slow source should call self.progress(i, n, "...") as it goes so
         # the run doesn't look frozen. Default is a no-op.
@@ -192,21 +196,49 @@ def load_ledger(path: str, include_inbox: bool) -> list[Canary]:
 # ---------------------------------------------------------------------------
 #  Runner
 # ---------------------------------------------------------------------------
+@dataclass
+class SourceResult:
+    """How one source fared in a run (for reports)."""
+    name: str
+    status: str          # "ok" | "skipped" | "error"
+    reason: str = ""
+    hits: int = 0
+    seconds: float = 0.0
+    stats: dict = field(default_factory=dict)
+
+
+def _safe_stats(stats) -> dict:
+    """Keep only short scalar facts from a source's stats."""
+    out = {}
+    if isinstance(stats, dict):
+        for k, v in list(stats.items())[:20]:
+            if isinstance(v, (bool, int, float)) or (isinstance(v, str) and len(v) <= 200):
+                out[str(k)[:60]] = v
+    return out
+
+
 def run_check(canaries: list[Canary], source_names: list[str],
-              source_config: dict, show_progress: bool = True
+              source_config: dict, show_progress: bool = True,
+              results: list[SourceResult] | None = None,
               ) -> tuple[list[Hit], list[tuple[str, str]]]:
-    """Return (hits, skipped) where skipped is [(source_name, reason)]."""
+    """Return (hits, skipped) where skipped is [(source_name, reason)].
+
+    Pass a list as `results` to also receive one SourceResult per source."""
+    import time
     hits: list[Hit] = []
     skipped: list[tuple[str, str]] = []
+    record = results.append if results is not None else (lambda r: None)
     for name in source_names:
         cls = _REGISTRY.get(name)
         if cls is None:
             skipped.append((name, "no such source registered"))
+            record(SourceResult(name, "skipped", "no such source registered"))
             continue
         src = cls(**source_config.get(name, {}))
         ok, reason = src.available()
         if not ok:
             skipped.append((name, reason or "unavailable"))
+            record(SourceResult(name, "skipped", reason or "unavailable"))
             continue
         if show_progress:
             def _report(done, total, note="", _n=name):
@@ -218,10 +250,18 @@ def run_check(canaries: list[Canary], source_names: list[str],
             src.progress = _report
         # only hand a source the token kinds it supports
         eligible = [c for c in canaries if src.supports]
+        start, found = time.monotonic(), []
         try:
-            hits.extend(src.check(eligible))
+            for hit in src.check(eligible):
+                found.append(hit)
+            status, why = "ok", ""
         except Exception as e:  # a hard failure in one source must not kill the run
             skipped.append((name, f"error: {e}"))
+            status, why = "error", str(e)
+        hits.extend(found)       # hits found before a failure are kept
+        record(SourceResult(name, status, why, len(found),
+                            round(time.monotonic() - start, 1),
+                            _safe_stats(getattr(src, "stats", {}))))
     return hits, skipped
 
 
@@ -272,6 +312,12 @@ def main(argv=None):
     p.add_argument("--config", help="Optional JSON file of per-source config "
                                     '(e.g. {"hibp": {"api_key": "..."}}).')
     p.add_argument("--out", help="Write hits as JSONL to this path (default: stdout summary).")
+    p.add_argument("--report", action="append", default=[], metavar="PATH",
+                   help="Write a report of this run: PATH ending in .html (one "
+                        "self-contained page) or .json. Repeatable. Never "
+                        "contains canary values.")
+    p.add_argument("--report-title", metavar="TEXT",
+                   help="Title for --report (default: this host's name).")
     p.add_argument("--list-sources", action="store_true",
                    help="List registered sources and exit.")
     p.add_argument("--no-notify", action="store_true",
@@ -317,6 +363,9 @@ def main(argv=None):
 
     if not args.ledger:
         p.error("a ledger path is required (or use --list-sources / --notify-test)")
+    for path in args.report:
+        if report.report_format(path) is None:
+            p.error(f"--report path must end in .html or .json: {path}")
 
     try:
         canaries = load_ledger(args.ledger, args.include_inbox)
@@ -325,7 +374,10 @@ def main(argv=None):
         sys.exit(2)
     source_names = [s.strip() for s in args.sources.split(",") if s.strip()]
 
-    hits, skipped = run_check(canaries, source_names, source_config)
+    started = datetime.now(timezone.utc)
+    results: list[SourceResult] = []
+    hits, skipped = run_check(canaries, source_names, source_config, results=results)
+    finished = datetime.now(timezone.utc)
 
     print(f"checked {len(canaries)} canaries against {len(source_names)} "
           f"source(s): {len(hits)} hit(s)")
@@ -342,6 +394,17 @@ def main(argv=None):
         for h in hits:
             print(f"  HIT {h.canary.record_id} [{h.source}] {h.token_kind}="
                   f"{h.token} @ {h.location}")
+
+    if args.report:
+        rep = report.build(canaries=canaries, source_names=source_names, hits=hits,
+                           results=results, started=started, finished=finished,
+                           ledger_path=args.ledger, title=args.report_title or "")
+        for path in args.report:
+            try:
+                report.write(path, rep)
+                print(f"  wrote report to {path}")
+            except OSError as e:
+                sys.stderr.write(f"WARNING: could not write report {path}: {e}\n")
 
     if notify_cfg and not args.no_notify:
         sent, problems = notify.notify_run(notify_cfg, hits, skipped,
