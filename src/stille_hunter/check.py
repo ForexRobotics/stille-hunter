@@ -293,6 +293,16 @@ def load_plugins(packages=("stille_hunter.sources", "stille_hunter_pro.sources")
     return problems
 
 
+def _searched_kinds(results: list[SourceResult]) -> set[str]:
+    """Marker kinds that the sources which actually ran can search for."""
+    kinds: set[str] = set()
+    for r in results:
+        cls = _REGISTRY.get(r.name)
+        if cls is not None and r.status != "skipped":
+            kinds.update(cls.supports)
+    return kinds
+
+
 def main(argv=None):
     # Discover sources from the stille_hunter.sources package (and the pro
     # package if installed). Importing each registers it.
@@ -300,9 +310,9 @@ def main(argv=None):
 
     p = argparse.ArgumentParser(
         description="Check canary ledgers against leak sources (stille-hunter).")
-    p.add_argument("ledger", nargs="?",
-                   help="Path to a canary ledger (.jsonl or .csv). "
-                        "Not needed with --list-sources.")
+    p.add_argument("ledger", nargs="*",
+                   help="Canary ledger(s) (.jsonl or .csv); several are checked "
+                        "together in one run. Not needed with --list-sources.")
     p.add_argument("--sources", default="null",
                    help="Comma-separated source names. Registered: "
                         + ",".join(sorted(_REGISTRY)) + " (default: null)")
@@ -367,11 +377,13 @@ def main(argv=None):
         if report.report_format(path) is None:
             p.error(f"--report path must end in .html or .json: {path}")
 
-    try:
-        canaries = load_ledger(args.ledger, args.include_inbox)
-    except FileNotFoundError:
-        sys.stderr.write(f"ERROR: ledger not found: {args.ledger}\n")
-        sys.exit(2)
+    canaries = []
+    for path in args.ledger:
+        try:
+            canaries.extend(load_ledger(path, args.include_inbox))
+        except FileNotFoundError:
+            sys.stderr.write(f"ERROR: ledger not found: {path}\n")
+            sys.exit(2)
     source_names = [s.strip() for s in args.sources.split(",") if s.strip()]
 
     started = datetime.now(timezone.utc)
@@ -398,7 +410,8 @@ def main(argv=None):
     if args.report:
         rep = report.build(canaries=canaries, source_names=source_names, hits=hits,
                            results=results, started=started, finished=finished,
-                           ledger_path=args.ledger, title=args.report_title or "")
+                           ledgers=args.ledger, title=args.report_title or "",
+                           searched=_searched_kinds(results))
         for path in args.report:
             try:
                 report.write(path, rep)

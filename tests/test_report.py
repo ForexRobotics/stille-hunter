@@ -83,7 +83,7 @@ def test_cli_writes_html_and_json_without_canary_values(tmp_path, capsys):
                     "--report-title", "www01 <prod>"])
     assert e.value.code == 1                                # a hit
     rep = json.loads(json_path.read_text(encoding="utf-8"))
-    assert rep["title"] == "www01 <prod>" and rep["ledger"] == "www.ledger.jsonl"
+    assert rep["title"] == "www01 <prod>" and rep["ledgers"] == ["www.ledger.jsonl"]
     assert rep["summary"] == {"canaries": 2, "sources": 3, "hits": 1, "canaries_hit": 1,
                               "sources_ok": 1, "sources_failed": 1, "sources_skipped": 1}
     assert rep["canaries"]["by_seed_tag"] == {"www-members": 1, "ci-secrets": 1}
@@ -122,4 +122,26 @@ def test_failed_source_is_flagged_as_incomplete(tmp_path):
 def test_bad_report_extension_is_refused_before_running(tmp_path):
     with pytest.raises(SystemExit) as e:
         check.main([_ledger(tmp_path), "--sources", "test_finds", "--report", "r.txt"])
+    assert e.value.code == 2
+
+
+def test_several_ledgers_and_only_searched_markers(tmp_path):
+    a = tmp_path / "a.ledger.jsonl"
+    b = tmp_path / "b.ledger.jsonl"
+    a.write_text(json.dumps({"record_id": "aaaaaa", "seed_tag": "www", "email": SECRET}) + "\n")
+    b.write_text(json.dumps({"record_id": "bbbbbb", "seed_tag": "ci", "provider": "github",
+                             "api_token": "ghp_bbbbbbEXAMPLE0000"}) + "\n")
+    out = tmp_path / "r.json"
+    with pytest.raises(SystemExit) as e:
+        check.main([str(a), str(b), "--sources", "test_finds", "--report", str(out)])
+    assert e.value.code == 1
+    rep = json.loads(out.read_text(encoding="utf-8"))
+    assert rep["ledgers"] == ["a.ledger.jsonl", "b.ledger.jsonl"]
+    assert rep["summary"]["canaries"] == 2
+    assert rep["canaries"]["by_marker"] == {"email": 1}      # test_finds searches email only
+
+
+def test_missing_one_of_several_ledgers_is_an_error(tmp_path):
+    with pytest.raises(SystemExit) as e:
+        check.main([_ledger(tmp_path), str(tmp_path / "nope.jsonl"), "--sources", "null"])
     assert e.value.code == 2

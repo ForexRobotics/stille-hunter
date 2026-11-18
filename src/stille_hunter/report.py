@@ -33,11 +33,17 @@ def report_format(path: str) -> str | None:
 
 
 def build(*, canaries, source_names, hits, results, started: datetime,
-          finished: datetime, ledger_path: str = "", title: str = "") -> dict:
-    """The report as a plain dict (the JSON form)."""
+          finished: datetime, ledgers=(), title: str = "", searched=None) -> dict:
+    """The report as a plain dict (the JSON form).
+
+    `ledgers` are the ledger paths (only file names are kept). `searched`, if
+    given, limits the marker counts to the kinds the run's sources search for,
+    so metadata such as a token's provider is not counted as a marker."""
+    if isinstance(ledgers, str):
+        ledgers = [ledgers]
     kinds: Counter = Counter()
     for c in canaries:
-        kinds.update(c.tokens().keys())
+        kinds.update(k for k in c.tokens() if searched is None or k in searched)
     tags = Counter(c.seed_tag or "(none)" for c in canaries)
     sources = [{"name": r.name, "status": r.status, "reason": r.reason, "hits": r.hits,
                 "seconds": r.seconds, "stats": dict(r.stats)} for r in results]
@@ -49,7 +55,7 @@ def build(*, canaries, source_names, hits, results, started: datetime,
         "started_at": started.astimezone(timezone.utc).isoformat(timespec="seconds"),
         "finished_at": finished.astimezone(timezone.utc).isoformat(timespec="seconds"),
         "duration_seconds": round((finished - started).total_seconds(), 1),
-        "ledger": os.path.basename(ledger_path),
+        "ledgers": [os.path.basename(p) for p in ledgers],
         "summary": {
             "canaries": len(canaries),
             "sources": len(source_names),
@@ -126,6 +132,14 @@ def _bars(counts: dict) -> str:
         for k, v in counts.items())
 
 
+def _ledgers(names: list) -> str:
+    if not names:
+        return "ledger: -"
+    if len(names) <= 3:
+        return ("ledger: " if len(names) == 1 else "ledgers: ") + _e(", ".join(names))
+    return f"<span title='{_e(', '.join(names))}'>{len(names)} ledgers</span>"
+
+
 def _stats(stats: dict) -> str:
     return " · ".join(f"{_e(k)}: <b>{_e(v)}</b>" for k, v in stats.items())
 
@@ -184,7 +198,7 @@ def to_html(rep: dict) -> str:
 <div><h1>stille-hunter &mdash; {_e(rep['title'])}</h1>
 <div class="muted">{_e(rep['started_at'][:16].replace('T', ' '))} UTC
 &middot; {rep['duration_seconds']}s
-&middot; ledger: {_e(rep['ledger'] or '-')} &middot; v{_e(rep['version'])}</div></div>
+&middot; {_ledgers(rep['ledgers'])} &middot; v{_e(rep['version'])}</div></div>
 </header>
 <div class="pills">{pills}</div>
 <section class="card">{status}</section>
@@ -194,7 +208,7 @@ def to_html(rep: dict) -> str:
 {src_rows}</table></section>
 <section class="card"><h2>What was checked</h2><div class="grid">
 <div><p class="muted">Canaries by seed tag</p>{_bars(c['by_seed_tag'])}</div>
-<div><p class="muted">Markers searched for</p>{_bars(c['by_marker'])}</div>
+<div><p class="muted">Markers searched for (canaries carrying each)</p>{_bars(c['by_marker'])}</div>
 </div></section>
 <footer>stille-hunter &middot; leak-canary report &middot; Apache-2.0 &middot;
 <a href="https://github.com/ForexRobotics/stille-hunter" style="color:inherit">source</a></footer>
