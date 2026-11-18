@@ -77,6 +77,11 @@ Then `chmod 700 ~/.stille/check.sh` and add a daily entry with `crontab -e`:
 17 6 * * * $HOME/.stille/check.sh >> $HOME/.stille/check.log 2>&1
 ```
 
+To keep a page you can open after each run, add
+`--report "$HOME/.stille/reports/$(basename "$ledger" .ledger.jsonl).html"` to
+the `check` line (create `~/.stille/reports` first). It is overwritten each
+run; add `--report ....json` too if a script or an AI assistant should read it.
+
 ## 3b. Windows Task Scheduler
 
 Create `%USERPROFILE%\.stille\check.cmd`:

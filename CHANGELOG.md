@@ -9,6 +9,15 @@ While the version is `0.x`, minor bumps may include breaking changes; see
 
 ## [Unreleased]
 
+### Added
+- `check --report PATH` writes a report of the run, as one self-contained
+  HTML page (light and dark) or JSON, by extension; repeatable (#28). It shows
+  hits without canary values, each source's outcome and coverage, and the
+  canaries checked by seed tag and marker. `--report-title` sets its title.
+- Sources can describe what a run covered through `CheckSource.stats` (short
+  scalar facts, shown as given in reports). `run_check(..., results=[])`
+  returns a `SourceResult` per source; its return value is unchanged.
+
 ## [0.3.0] - 2026-11-16
 
 ### Added
