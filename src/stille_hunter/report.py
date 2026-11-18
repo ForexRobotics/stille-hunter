@@ -23,6 +23,7 @@ from collections import Counter
 from datetime import datetime, timezone
 
 from . import __version__
+from ._logo import ICON_PNG_BASE64
 
 FORMATS = {".html": "html", ".htm": "html", ".json": "json"}
 
@@ -79,6 +80,8 @@ body{margin:0;background:var(--bg);color:var(--fg);
 font:15px/1.55 system-ui,-apple-system,"Segoe UI","Hiragino Sans","Noto Sans JP",sans-serif}
 main{max-width:1000px;margin:0 auto;padding:28px 16px 40px}
 h1{font-size:24px;margin:0 0 4px}
+header{display:flex;gap:16px;align-items:center}
+.logo{width:56px;height:56px;flex:none}
 h2{font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 0 12px}
 .muted{color:var(--muted)}
 .pills{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 18px}
@@ -177,10 +180,12 @@ def to_html(rep: dict) -> str:
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>stille-hunter report - {_e(rep['title'])}</title>
 <style>{_CSS}</style></head><body><main>
-<h1>stille-hunter &mdash; {_e(rep['title'])}</h1>
+<header><img class="logo" alt="stille-hunter" src="data:image/png;base64,{ICON_PNG_BASE64}">
+<div><h1>stille-hunter &mdash; {_e(rep['title'])}</h1>
 <div class="muted">{_e(rep['started_at'][:16].replace('T', ' '))} UTC
 &middot; {rep['duration_seconds']}s
-&middot; ledger: {_e(rep['ledger'] or '-')} &middot; v{_e(rep['version'])}</div>
+&middot; ledger: {_e(rep['ledger'] or '-')} &middot; v{_e(rep['version'])}</div></div>
+</header>
 <div class="pills">{pills}</div>
 <section class="card">{status}</section>
 <section class="card"><h2>Hits</h2>{hits}</section>

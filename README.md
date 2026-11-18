@@ -141,7 +141,7 @@ stille-hunter check --list-sources   # see available sources
 ```
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/ForexRobotics/stille-hunter/main/docs/img/report-light.png" alt="stille-hunter check report" width="720">
+  <img src="https://raw.githubusercontent.com/ForexRobotics/stille-hunter/main/docs/img/report-dark.png" alt="stille-hunter check report" width="720">
 </p>
 <p align="center"><sub>One <code>check --report</code> page (light and dark). Demo data shown.</sub></p>
 
