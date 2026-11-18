@@ -20,7 +20,7 @@ for it, trace a hit back to where it was planted.
 - Publish to PyPI (`pip install stille-hunter`).
 - CI: run the test suite and check DCO sign-off on every pull request.
 
-## v0.3 — tell me when it hits
+## v0.3 — tell me when it hits (released)
 
 - Notifications when a canary is found, or when a source fails (email, and a
   webhook for Slack / Discord / anything else).
@@ -31,7 +31,17 @@ for it, trace a hit back to where it was planted.
 
 Goal: plant, forget, and get told when something leaks.
 
-## v0.4 — inbox detection as a first-class path
+## v0.4 — a report of every run
+
+- `check --report`: one self-contained HTML page (light and dark) and/or JSON
+  for each run - hits without canary values, how each source fared and what
+  it covered, and which canaries were checked.
+- Sources can say what a run covered (`CheckSource.stats`).
+- Several ledgers checked together in one run: one notification, one report.
+
+Goal: see at a glance that the check ran, what it covered, and what it found.
+
+## v0.5 — inbox detection as a first-class path
 
 - `stille-hunter inbox`: match mail received on your catch-all against the
   ledger, so the inbox path is handled by the tool, not by hand.
@@ -41,11 +51,12 @@ Goal: plant, forget, and get told when something leaks.
 - A setup guide for the catch-all (DNS and mail).
 - German locale (`--locale de`) for member records.
 
-## v0.5 — tools for running it day to day
+## v0.6 — tools for running it day to day
 
 - Ledger management: list canaries by where they were planted, retire and
   rotate them.
-- Hit history and a summary report.
+- Hit history across runs and a summary report, built on the per-run JSON
+  report.
 
 ## v1.0 — a stable contract
 
