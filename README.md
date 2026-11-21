@@ -183,6 +183,39 @@ implementing the `CheckSource` contract; add one by dropping a module in
 Proprietary sources (dark-web crawl, commercial threat feeds) ship separately
 and register through the same contract.
 
+## FAQ
+
+**What does stille-hunter find — and what does it not?**
+It tells you when something you planted or own — a canary, and (in the
+proprietary edition) your company name or domain — surfaces in a source you
+have enabled. The open-source core ships with `hibp` (known breaches) and
+`github` (secrets in public code); the proprietary edition adds ransomware /
+extortion leak-site listings. That is the whole job. It is **not** a
+threat-intelligence platform: it does not trace money laundering or stolen
+cryptocurrency, it does not attribute nation-state financial operations (that is
+blockchain-analytics territory), and it does not monitor hacker forums,
+stealer-log dumps or credential markets — a possible future source, not
+something it does today. And it never hacks back.
+
+**Do you download the leaked data?**
+No. stille-hunter reads listing *metadata* only — that a name or canary
+appears, under which group, and when. It never downloads, stores, or serves the
+leaked data itself. Examining the contents of a breach is a separate,
+specialist task; this tool draws the line at "you appear here."
+
+**We're a Japanese (non-Latin-name) company. How do we watch for ourselves?**
+Leak sites and breach dumps almost always list victims in English / romaji, not
+kanji. When you watch for a name or domain (proprietary edition), build the
+terms from the romaji name **and** your domain — e.g. `Rakuten`,
+`rakuten.co.jp`, not the kanji spelling, which usually matches nothing. Very
+short or common terms are refused on purpose: they collide with unrelated
+companies.
+
+**A listing is more than a year old. Is it still real?**
+The record is; the site may not be. Ransomware leak sites get seized or shut
+down, so a listing older than roughly a year may no longer be reachable even
+though the entry remains in the tracker.
+
 ## Design
 
 - **Read-only, search-only.** A source may look a canary up; it never logs into
