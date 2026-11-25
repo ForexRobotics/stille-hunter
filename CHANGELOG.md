@@ -15,6 +15,15 @@ While the version is `0.x`, minor bumps may include breaking changes; see
   ß -> ss), street addresses with a postcode that fits the city, German mobile
   numbers and a German mail-domain mix; `db_dump` notes are in German.
 
+## [0.5.0] - 2026-11-25 [YANKED]
+
+Tagged before its planned features were merged: no code changes from
+0.4.0, only the README FAQ below. Yanked from PyPI; use 0.5.1.
+
+### Added
+- README: an FAQ drawing the line between what stille-hunter finds and
+  what it does not (#32).
+
 ## [0.4.0] - 2026-11-18
 
 ### Added
@@ -133,7 +142,8 @@ and search-only — it never touches anyone else's systems.
 - Apache-2.0 license; DCO sign-off contribution workflow (`DCO`,
   `CONTRIBUTING.md`); project overview and "human-directed, AI-built" diagrams.
 
-[Unreleased]: https://github.com/ForexRobotics/stille-hunter/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/ForexRobotics/stille-hunter/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/ForexRobotics/stille-hunter/releases/tag/v0.5.0
 [0.4.0]: https://github.com/ForexRobotics/stille-hunter/releases/tag/v0.4.0
 [0.3.0]: https://github.com/ForexRobotics/stille-hunter/releases/tag/v0.3.0
 [0.2.0]: https://github.com/ForexRobotics/stille-hunter/releases/tag/v0.2.0
