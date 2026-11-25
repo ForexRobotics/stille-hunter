@@ -6,4 +6,4 @@ to seed as leak canaries (generate), and check a canary ledger against leak
 sources (check). Proprietary sources (Tor dark-web crawl, commercial threat
 feeds) live in a separate package and plug into the same CheckSource contract.
 """
-__version__ = "0.5.0"
+__version__ = "0.5.1"
