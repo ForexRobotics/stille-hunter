@@ -34,7 +34,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Iterable
 
-from . import notify, report
+from . import history, notify, report
 
 
 # ---------------------------------------------------------------------------
@@ -328,6 +328,9 @@ def main(argv=None):
                         "contains canary values.")
     p.add_argument("--report-title", metavar="TEXT",
                    help="Title for --report (default: this host's name).")
+    p.add_argument("--history", metavar="PATH",
+                   help="Append one line for this run to a history file (JSON lines; "
+                        "no canary values). Summarise it with `stille-hunter history`.")
     p.add_argument("--list-sources", action="store_true",
                    help="List registered sources and exit.")
     p.add_argument("--no-notify", action="store_true",
@@ -381,8 +384,8 @@ def execute(args, source_config: dict, *, fail=None) -> int:
 
     Shared by `check` and `inbox`. `args` needs: ledger (list of paths),
     sources (comma-separated names), include_inbox, out, report (list),
-    report_title and no_notify. Returns the exit code: 1 when something was
-    found, else 0."""
+    report_title and no_notify; `history` (a path) is optional. Returns the
+    exit code: 1 when something was found, else 0."""
     def _fail(msg):
         if fail is not None:
             fail(msg)
@@ -424,11 +427,19 @@ def execute(args, source_config: dict, *, fail=None) -> int:
             print(f"  HIT {h.canary.record_id} [{h.source}] {h.token_kind}="
                   f"{h.token} @ {h.location}")
 
-    if args.report:
+    history_path = getattr(args, "history", None)
+    rep = None
+    if args.report or history_path:
         rep = report.build(canaries=canaries, source_names=source_names, hits=hits,
                            results=results, started=started, finished=finished,
                            ledgers=args.ledger, title=args.report_title or "",
                            searched=_searched_kinds(results))
+    if history_path:
+        try:
+            history.append(history_path, history.entry(rep))
+        except OSError as e:
+            sys.stderr.write(f"WARNING: could not append to history {history_path}: {e}\n")
+    if args.report:
         for path in args.report:
             try:
                 report.write(path, rep)

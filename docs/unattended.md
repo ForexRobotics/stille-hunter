@@ -70,7 +70,8 @@ echo "== $(date '+%Y-%m-%d %H:%M:%S')"
 mkdir -p "$HOME"/.stille/reports
 "$HOME"/.stille/venv/bin/stille-hunter check "$HOME"/.stille/ledgers/*.ledger.jsonl \
   --sources hibp,github --config "$HOME"/.stille/config.json \
-  --report "$HOME"/.stille/reports/latest.html --report "$HOME"/.stille/reports/latest.json
+  --report "$HOME"/.stille/reports/latest.html --report "$HOME"/.stille/reports/latest.json \
+  --history "$HOME"/.stille/history.jsonl
 ```
 
 Then `chmod 700 ~/.stille/check.sh` and add a daily entry with `crontab -e`:
@@ -81,6 +82,15 @@ Then `chmod 700 ~/.stille/check.sh` and add a daily entry with `crontab -e`:
 
 `latest.html` is a page you can open after each run, and `latest.json` the
 same for a script or an AI assistant; both are overwritten each run.
+`history.jsonl` keeps one line per run, so you can look back across runs:
+
+```bash
+stille-hunter history ~/.stille/history.jsonl --days 30
+```
+
+It lists runs and failures per source, hits per seed tag, and per canary when
+it was first and last seen - `NEW` marks a leak that first appeared in the
+period, as opposed to one that is still visible from before.
 
 ## 3b. Windows Task Scheduler
 

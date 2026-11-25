@@ -244,6 +244,8 @@ def main(argv=None):
     p.add_argument("--report", action="append", default=[], metavar="PATH",
                    help="Write a report (.html or .json). Repeatable.")
     p.add_argument("--report-title", metavar="TEXT")
+    p.add_argument("--history", metavar="PATH",
+                   help="Append one line for this run to a history file.")
     p.add_argument("--no-notify", action="store_true")
     args = p.parse_args(argv)
 
@@ -280,5 +282,6 @@ def main(argv=None):
 
     run = argparse.Namespace(ledger=args.ledger, sources="inbox", include_inbox=True,
                              out=args.out, report=args.report,
-                             report_title=args.report_title, no_notify=args.no_notify)
+                             report_title=args.report_title, history=args.history,
+                             no_notify=args.no_notify)
     sys.exit(check.execute(run, config, fail=p.error))
