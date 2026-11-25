@@ -37,7 +37,9 @@ CONTEXT = {"type", "table", "retired_at", "retired_reason", "created_at", "seed_
 
 
 def test_every_released_version_has_fixtures():
-    assert {p.name for p in LEDGERS.iterdir()} >= {"v0.1.0", "v0.2.0", "v0.3.0", "v0.4.0"}
+    # 0.5.0 is skipped: yanked, and its code is identical to 0.4.0
+    assert {p.name for p in LEDGERS.iterdir()} >= {"v0.1.0", "v0.2.0", "v0.3.0", "v0.4.0",
+                                                   "v0.5.1"}
     assert len(FIXTURES) >= 25
 
 
