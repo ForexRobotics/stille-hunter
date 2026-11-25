@@ -1,0 +1,4 @@
+record_id,seed_tag,detect,locale,email,user_id,password_hash,created_at
+09ef5e,compat-v0.1.0,search,jp,hiroto.hasegawa.09ef5e@yahoo.co.jp,hiroto.hasegawa09ef,774c1cad2e0d03376bc9deb4317fdc4e1bd62e4e8107c2e8c19ffe51fb0df8f3,2026-11-25T11:16:10.332469+00:00
+1c8071,compat-v0.1.0,inbox,jp,yuta.nakamura.1c8071@quiet-harbour.net,ynakamura1c80,5fb269a6686150bc1118fcba638e9fd03b21a1aba3361b381bb8c5d6115242c5,2026-11-25T11:16:10.332487+00:00
+108bf7,compat-v0.1.0,inbox,jp,hiroto.ito.108bf7@quiet-harbour.net,hiroto.ito108b,e7df6e08d0e92e59a78ea9afe4856ce724d0d9248326dc3e366392155c403df2,2026-11-25T11:16:10.332503+00:00

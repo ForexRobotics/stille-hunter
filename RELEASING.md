@@ -14,7 +14,9 @@ stille-hunter uses [SemVer](https://semver.org/): **MAJOR.MINOR.PATCH**.
 
 The ledger format and the `CanaryType` / `CheckSource` plugin contracts are the
 things to treat as the public API — changing them in an incompatible way is the
-signal for a breaking bump.
+signal for a breaking bump. From 1.0.0 the full list, and how each kind of
+change is versioned, is in [docs/stability.md](docs/stability.md);
+`tests/test_compat.py` holds it in place.
 
 ## Single source of truth
 
@@ -77,6 +79,17 @@ Pushing a `vX.Y.Z` tag starts `.github/workflows/publish.yml`, which:
 5. announces the release on Discord, if a webhook is configured (below).
 
 Watch it at <https://github.com/ForexRobotics/stille-hunter/actions/workflows/publish.yml>.
+
+### After the release: compatibility fixtures
+
+Every release adds ledgers written by its own code to the compatibility
+tests, so later releases are checked against them. From the released tag:
+
+    git switch --detach vX.Y.Z && pip install -e .
+    python tools/compat_fixtures.py        # writes tests/compat/ledgers/vX.Y.Z/
+    git switch -c compat-vX.Y.Z && git add tests/compat && git commit -s -m "Add compat fixtures for vX.Y.Z"
+
+and open a pull request with it.
 If a step fails before the PyPI upload, nothing is published: fix it, delete
 the tag (`git push --delete origin vX.Y.Z`, `git tag -d vX.Y.Z`) and tag again.
 A version that reached PyPI can never be uploaded again — release a new

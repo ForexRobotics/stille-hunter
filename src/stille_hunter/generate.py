@@ -108,23 +108,12 @@ def register_type(cls: type[CanaryType]) -> type[CanaryType]:
 
 def load_type_plugins(packages=("stille_hunter.types", "stille_hunter_pro.types")
                       ) -> list[str]:
-    """Import every module in each type package so it self-registers."""
-    import importlib
-    import pkgutil
-    problems: list[str] = []
-    for pkg_name in packages:
-        try:
-            pkg = importlib.import_module(pkg_name)
-        except ImportError:
-            continue
-        for mod in pkgutil.iter_modules(pkg.__path__):
-            if mod.name.startswith("_"):
-                continue
-            try:
-                importlib.import_module(f"{pkg_name}.{mod.name}")
-            except Exception as e:
-                problems.append(f"{pkg_name}.{mod.name}: {e}")
-    return problems
+    """Import every module in each type package so it self-registers, then
+    every module declared under the ``stille_hunter.types`` entry-point group
+    (how a third-party package ships a type). Returns load problems."""
+    from . import _plugins
+    return (_plugins.load_packages(packages)
+            + _plugins.load_entry_points(_plugins.TYPE_GROUP))
 
 
 # ---------------------------------------------------------------------------

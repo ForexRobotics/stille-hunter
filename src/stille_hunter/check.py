@@ -280,23 +280,12 @@ def load_plugins(packages=("stille_hunter.sources", "stille_hunter_pro.sources")
     sources live in stille_hunter.sources; proprietary ones, when installed,
     in stille_hunter_pro.sources — both discovered the same way. A package
     that isn't installed (e.g. the pro one) is skipped silently.
+    Third-party packages declare sources under the ``stille_hunter.sources``
+    entry-point group instead; those are loaded too.
     """
-    import importlib
-    import pkgutil
-    problems: list[str] = []
-    for pkg_name in packages:
-        try:
-            pkg = importlib.import_module(pkg_name)
-        except ImportError:
-            continue  # package not installed (fine for the optional pro one)
-        for mod in pkgutil.iter_modules(pkg.__path__):
-            if mod.name.startswith("_"):
-                continue
-            try:
-                importlib.import_module(f"{pkg_name}.{mod.name}")
-            except Exception as e:
-                problems.append(f"{pkg_name}.{mod.name}: {e}")
-    return problems
+    from . import _plugins
+    return (_plugins.load_packages(packages)
+            + _plugins.load_entry_points(_plugins.SOURCE_GROUP))
 
 
 def _searched_kinds(results: list[SourceResult]) -> set[str]:
