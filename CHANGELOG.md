@@ -10,6 +10,12 @@ While the version is `0.x`, minor bumps may include breaking changes; see
 ## [Unreleased]
 
 ### Added
+- Traditional Chinese (Taiwan) locale for `member` and `db_dump` records:
+  `--locale tw`, also accepted as `--locale zh-TW` (#18). Names in
+  characters with passport-style romanization for email and user id,
+  addresses with the district's 3-digit postal code, 09xx-xxx-xxx mobile
+  numbers and a Taiwanese mail-domain mix; `db_dump` notes in Traditional
+  Chinese.
 - Ledger management (#15): `stille-hunter ledger list` (canaries per seed tag:
   active, retired, types, inbox count, table, dates - counts only, never
   values), `ledger retire --tag/--id [--reason]` (stamps `retired_at`; `check`

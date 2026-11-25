@@ -100,6 +100,37 @@ def test_db_dump_de_notes_are_german():
         assert rec["note"] in {t.format(ref=ref) for t in db_dump._NOTES_DE}
 
 
+def test_member_tw_postal_code_matches_district():
+    allowed = {(c, d): code for c, d, code in member_mod._TW_DISTRICTS}
+    for rec in _make("member", locale="tw", count=200):
+        addr = rec["address"]
+        postal = addr[:3]
+        match = [k for k, code in allowed.items() if addr[3:].startswith(k[0] + k[1])]
+        assert match, addr
+        assert allowed[match[0]] == postal, f"{postal} wrong for {match[0]}"
+        assert "號" in addr
+
+
+def test_member_tw_names_phone_and_ascii_markers():
+    for rec in _make("member", locale="tw", count=200):
+        assert rec["locale"] == "tw"
+        assert " " not in rec["full_name"] and 2 <= len(rec["full_name"]) <= 4
+        local = rec["email"].split("@", 1)[0]
+        assert local.isascii() and rec["user_id"].isascii()
+        assert rec["record_id"] in local
+        head, mid, tail = rec["phone"].split("-")
+        assert head.startswith("09") and len(head) == 4 and len(mid) == 3 and len(tail) == 3
+
+
+def test_zh_tw_is_an_alias_of_tw():
+    recs = _make("member", locale="zh-TW", count=5)
+    assert {r["locale"] for r in recs} == {"tw"}
+    from stille_hunter.types import db_dump
+    for rec in _make("db_dump", locale="zh-TW", count=10):
+        assert rec["_ledger"]["locale"] == "tw"
+        assert rec["note"] in {t.format(ref=rec["ref_code"]) for t in db_dump._NOTES_TW}
+
+
 def test_member_detect_flag_split():
     recs = _make("member", locale="jp", count=200,
                  self_domain="alerts.acme-corp.jp", self_ratio=0.5)

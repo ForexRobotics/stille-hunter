@@ -163,6 +163,34 @@ _DE_STREETS = ["Hauptstraße", "Bahnhofstraße", "Schulstraße", "Gartenstraße"
                "Dorfstraße", "Bergstraße", "Lindenstraße", "Kirchstraße",
                "Goethestraße", "Schillerstraße", "Am Markt", "Waldweg"]
 
+# --- Taiwan -----------------------------------------------------------------
+# (characters, romanization as on Taiwanese passports, without the hyphen).
+# Names are written without a space: 陳志明.
+_TW_SURNAME = [
+    ("陳", "chen"), ("林", "lin"), ("黃", "huang"), ("張", "chang"), ("李", "li"),
+    ("王", "wang"), ("吳", "wu"), ("劉", "liu"), ("蔡", "tsai"), ("楊", "yang"),
+    ("許", "hsu"), ("鄭", "cheng"), ("謝", "hsieh"), ("郭", "kuo"), ("洪", "hung"),
+    ("曾", "tseng"), ("邱", "chiu"), ("廖", "liao"), ("賴", "lai"), ("周", "chou"),
+]
+_TW_GIVEN = [
+    ("志明", "chihming"), ("家豪", "chiahao"), ("俊傑", "chunchieh"), ("冠宇", "kuanyu"),
+    ("宗翰", "tsunghan"), ("承恩", "chengen"), ("建宏", "chienhung"), ("志偉", "chihwei"),
+    ("柏翰", "pohan"), ("彥廷", "yenting"), ("怡君", "yichun"), ("雅婷", "yating"),
+    ("佩珊", "peishan"), ("淑芬", "shufen"), ("美玲", "meiling"), ("欣怡", "hsinyi"),
+    ("詩涵", "shihhan"), ("宜蓁", "yichen"), ("思妤", "ssuyu"), ("雅雯", "yawen"),
+]
+# (city, district, 3-digit postal code of that district)
+_TW_DISTRICTS = [
+    ("台北市", "中正區", "100"), ("台北市", "中山區", "104"), ("台北市", "大安區", "106"),
+    ("台北市", "信義區", "110"), ("台北市", "內湖區", "114"), ("新北市", "板橋區", "220"),
+    ("新北市", "新店區", "231"), ("基隆市", "仁愛區", "200"), ("新竹市", "東區", "300"),
+    ("桃園市", "桃園區", "330"), ("台中市", "北區", "404"), ("台中市", "西屯區", "407"),
+    ("台南市", "東區", "701"), ("高雄市", "苓雅區", "802"), ("高雄市", "前鎮區", "806"),
+]
+_TW_ROADS = ["中山路", "中正路", "民生路", "復興路", "光復路", "建國路", "和平路",
+             "自由路", "民權路", "成功路"]
+_TW_SECTIONS = ["", "", "一段", "二段", "三段"]
+
 _RANKS = ["bronze", "silver", "gold", "platinum"]
 _RANK_WEIGHTS = [50, 30, 15, 5]
 _STATUS = ["active", "active", "active", "suspended", "dormant"]
@@ -188,6 +216,10 @@ _FREEMAIL_CA = [
     ("gmail.com", 44), ("yahoo.ca", 12), ("icloud.com", 12),
     ("outlook.com", 8), ("hotmail.com", 8), ("hotmail.ca", 4),
     ("live.ca", 3), ("shaw.ca", 3), ("rogers.com", 3), ("bell.net", 3),
+]
+_FREEMAIL_TW = [
+    ("gmail.com", 50), ("yahoo.com.tw", 18), ("hotmail.com", 9), ("outlook.com", 6),
+    ("icloud.com", 6), ("msa.hinet.net", 6), ("pchome.com.tw", 3),
 ]
 _FREEMAIL_DE = [
     ("gmail.com", 30), ("web.de", 18), ("gmx.de", 16), ("gmx.net", 6),
@@ -245,6 +277,22 @@ def _de_address():
     plz = f"{secrets.choice(prefixes)}{secrets.randbelow(1000):03d}"
     return f"{secrets.choice(_DE_STREETS)} {secrets.randbelow(150)+1}, {plz} {city}"
 
+def _tw_name():
+    sur, rsur = secrets.choice(_TW_SURNAME)
+    given, rgiven = secrets.choice(_TW_GIVEN)
+    return f"{sur}{given}", rgiven, rsur
+
+def _tw_address():
+    city, district, postal = secrets.choice(_TW_DISTRICTS)
+    floor = f"{secrets.randbelow(12) + 2}樓" if secrets.randbelow(2) else ""
+    return (f"{postal}{city}{district}{secrets.choice(_TW_ROADS)}"
+            f"{secrets.choice(_TW_SECTIONS)}{secrets.randbelow(300) + 1}號{floor}")
+
+def _tw_phone():
+    """Taiwanese mobile: 09xx-xxx-xxx."""
+    return (f"09{secrets.randbelow(100):02d}-{secrets.randbelow(900) + 100}-"
+            f"{secrets.randbelow(900) + 100}")
+
 def _jp_phone():
     return f"080-{secrets.randbelow(9000)+1000}-{secrets.randbelow(9000)+1000}"
 
@@ -287,7 +335,18 @@ _LOCALES = {
     "gb": LocaleProfile("gb", _en_name, _gb_address, _gb_phone, _FREEMAIL_GB),
     "ca": LocaleProfile("ca", _en_name, _ca_address, _ca_phone, _FREEMAIL_CA),
     "de": LocaleProfile("de", _de_name, _de_address, _de_phone, _FREEMAIL_DE),
+    "tw": LocaleProfile("tw", _tw_name, _tw_address, _tw_phone, _FREEMAIL_TW),
 }
+#: other spellings accepted by --locale
+LOCALE_ALIASES = {"zh-TW": "tw", "zh-tw": "tw"}
+
+
+def locale_choices() -> list[str]:
+    return sorted(_LOCALES) + sorted(k for k in LOCALE_ALIASES if k != "zh-tw")
+
+
+def resolve_locale(code: str) -> LocaleProfile:
+    return _LOCALES[LOCALE_ALIASES.get(code, code)]
 
 # ============================================================================
 #  Cards
@@ -356,8 +415,9 @@ class MemberType(CanaryType):
     description = "Fake customer/member account record (name, address, card, ...)."
 
     def add_arguments(self, p: argparse.ArgumentParser) -> None:
-        p.add_argument("--locale", default="jp", choices=sorted(_LOCALES.keys()),
-                       help="Regional profile: name, address, phone and domain mix.")
+        p.add_argument("--locale", default="jp", choices=locale_choices(),
+                       help="Regional profile: name, address, phone and domain mix "
+                            "(zh-TW is the same as tw).")
         p.add_argument("--self-domain",
                        help="A domain you control (catch-all). Records on it get detect=inbox.")
         p.add_argument("--self-ratio", type=float, default=0.4)
@@ -377,7 +437,7 @@ class MemberType(CanaryType):
                     "control. Pass a domain whose mail you can receive, or omit it "
                     "for free-mail-only (search-detect) canaries.")
 
-        prof = _LOCALES[args.locale]
+        prof = resolve_locale(args.locale)
         for _ in range(count):
             brand = (secrets.choice(["visa", "mastercard", "amex", "jcb"])
                      if args.brand == "mixed" else args.brand)
