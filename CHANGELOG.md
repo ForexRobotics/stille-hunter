@@ -9,6 +9,8 @@ While the version is `0.x`, minor bumps may include breaking changes; see
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-11-25
+
 ### Added
 - Ledger management (#15): `stille-hunter ledger list` (canaries per seed tag:
   active, retired, types, inbox count, table, dates - counts only, never
@@ -184,7 +186,8 @@ and search-only — it never touches anyone else's systems.
 - Apache-2.0 license; DCO sign-off contribution workflow (`DCO`,
   `CONTRIBUTING.md`); project overview and "human-directed, AI-built" diagrams.
 
-[Unreleased]: https://github.com/ForexRobotics/stille-hunter/compare/v0.5.1...HEAD
+[Unreleased]: https://github.com/ForexRobotics/stille-hunter/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/ForexRobotics/stille-hunter/releases/tag/v0.6.0
 [0.5.1]: https://github.com/ForexRobotics/stille-hunter/releases/tag/v0.5.1
 [0.5.0]: https://github.com/ForexRobotics/stille-hunter/releases/tag/v0.5.0
 [0.4.0]: https://github.com/ForexRobotics/stille-hunter/releases/tag/v0.4.0
