@@ -39,8 +39,8 @@
   <rect class="card" x="40" y="60" width="200" height="88" rx="10"/>
   <text class="step" x="56" y="84" font-size="11" font-weight="700">1</text>
   <text class="title" x="56" y="104" font-size="15" font-weight="700">generate</text>
-  <text class="body" x="56" y="124" font-size="12">Fake but realistic member</text>
-  <text class="body" x="56" y="139" font-size="12">records, each with a unique token.</text>
+  <text class="body" x="56" y="124" font-size="12">Inert fakes: members, keys,</text>
+  <text class="body" x="56" y="139" font-size="12">tokens, configs, all traceable.</text>
 
   <!-- seed into data -->
   <rect class="card" x="40" y="188" width="200" height="74" rx="10"/>
@@ -59,8 +59,8 @@
   <path class="arrow" d="M140,148 L140,186"/>
   <polygon class="arrowhead" points="140,188 136,180 144,180"/>
   <!-- generate also writes ledger -->
-  <path class="arrow" d="M70,148 C58,210 58,250 70,300"/>
-  <polygon class="arrowhead" points="70,300 63,294 73,296"/>
+  <path class="arrow" d="M56,148 C22,190 22,262 52,298"/>
+  <polygon class="arrowhead" points="54,300 45,296 51,290"/>
 
   <!-- LEAK (center) -->
   <path class="arrow" d="M240,225 L320,225"/>
@@ -81,23 +81,24 @@
   <!-- inbox detect -->
   <rect class="card-hi" x="560" y="78" width="260" height="92" rx="10"/>
   <text class="title" x="578" y="104" font-size="15" font-weight="700">inbox detection</text>
-  <text class="body" x="578" y="126" font-size="12">Self-domain canaries. Mail sent to a</text>
-  <text class="body" x="578" y="142" font-size="12">canary address hits your catch-all —</text>
+  <text class="body" x="578" y="126" font-size="12">Mail to a self-domain canary lands in</text>
+  <text class="body" x="578" y="142" font-size="12">your catch-all; inbox matches it.</text>
   <text class="mono" x="578" y="160" font-size="11">fastest signal · detect=inbox</text>
 
   <!-- search detect -->
   <rect class="card-hi" x="560" y="286" width="260" height="92" rx="10"/>
   <text class="title" x="578" y="312" font-size="15" font-weight="700">search detection</text>
-  <text class="body" x="578" y="334" font-size="12">check looks tokens up in leak sources</text>
-  <text class="body" x="578" y="350" font-size="12">(HIBP, code search, …).</text>
+  <text class="body" x="578" y="334" font-size="12">check looks markers up in leak sources</text>
+  <text class="body" x="578" y="350" font-size="12">(HIBP, GitHub code search, …).</text>
   <text class="mono" x="578" y="368" font-size="11">covers free-mail · detect=search</text>
 
   <!-- alert -->
-  <path class="arrow" d="M690,170 L690,205"/>
-  <path class="arrow" d="M690,286 L690,251"/>
-  <rect class="card-al" x="596" y="205" width="188" height="46" rx="10"/>
-  <text class="title" x="690" y="227" font-size="14" font-weight="700" text-anchor="middle">LEAK CONFIRMED</text>
-  <text class="body" x="690" y="244" font-size="11" text-anchor="middle">which seed_tag leaked · exit 1</text>
+  <path class="arrow" d="M690,170 L690,194"/>
+  <path class="arrow" d="M690,286 L690,262"/>
+  <rect class="card-al" x="596" y="194" width="188" height="68" rx="10"/>
+  <text class="title" x="690" y="216" font-size="14" font-weight="700" text-anchor="middle">LEAK CONFIRMED</text>
+  <text class="body" x="690" y="233" font-size="11" text-anchor="middle">which seed_tag leaked · exit 1</text>
+  <text class="mono" x="690" y="251" font-size="11" text-anchor="middle">notify · report · history</text>
 
   <!-- footer tagline -->
   <text class="body" x="40" y="430" font-size="12" font-style="italic">Read-only, search-only. Sets a quiet trap and waits — it never touches anyone else's systems.</text>
