@@ -31,7 +31,7 @@ for it, trace a hit back to where it was planted.
 
 Goal: plant, forget, and get told when something leaks.
 
-## v0.4 — a report of every run
+## v0.4 — a report of every run (released)
 
 - `check --report`: one self-contained HTML page (light and dark) and/or JSON
   for each run - hits without canary values, how each source fared and what
@@ -41,7 +41,7 @@ Goal: plant, forget, and get told when something leaks.
 
 Goal: see at a glance that the check ran, what it covered, and what it found.
 
-## v0.5 — inbox detection as a first-class path
+## v0.5 — inbox detection as a first-class path (released as 0.5.1)
 
 - `stille-hunter inbox`: match mail received on your catch-all against the
   ledger, so the inbox path is handled by the tool, not by hand.
@@ -51,7 +51,7 @@ Goal: see at a glance that the check ran, what it covered, and what it found.
 - A setup guide for the catch-all (DNS and mail).
 - German locale (`--locale de`) for member records.
 
-## v0.6 — tools for running it day to day
+## v0.6 — tools for running it day to day (released)
 
 - Ledger management: list canaries by where they were planted, retire and
   rotate them.
@@ -62,7 +62,7 @@ Goal: see at a glance that the check ran, what it covered, and what it found.
 
 - Freeze the ledger format and the `CanaryType` / `CheckSource` plugin
   contracts as the public API.
-- Traditional Chinese (Taiwan) locale (`--locale zh-TW`).
+- Traditional Chinese (Taiwan) locale (`--locale tw`, also `zh-TW`).
 - Complete user and plugin-author documentation.
 
 ## More places to look (not yet scheduled)

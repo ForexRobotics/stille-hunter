@@ -10,6 +10,14 @@ While the version is `0.x`, minor bumps may include breaking changes; see
 ## [Unreleased]
 
 ### Added
+- Documentation (#19): a user guide (`docs/user-guide.md`) covering every
+  command, option, source, notification setting and config section, and a
+  plugin author guide (`docs/plugin-guide.md`) for canary types and check
+  sources - the contracts, how plugins are found (packages and entry points),
+  testing, and the project's limits (read-only, search-only, self-contained,
+  never downloading or keeping leaked data). The README links all guides.
+  Tests check that every CLI option appears in the user guide and every
+  contract member in the plugin guide, and the guide's example plugins run.
 - The public API is declared stable from 1.0 (#17): `docs/stability.md`
   lists what is covered - the ledger format, the `CanaryType` /
   `CheckSource` contracts, the CLI and its exit codes, the JSON outputs and
