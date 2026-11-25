@@ -11,6 +11,16 @@
     "user_agent": "stille-hunter-yourorg",
     "min_interval": 6.5
   },
+  "inbox": {
+    "domain": "your-trap-domain.net",
+    "imap": {
+      "host": "imap.your-provider.net",
+      "user": "YOUR_MAILBOX_USER",
+      "password": "YOUR_APP_PASSWORD",
+      "folder": "INBOX"
+    },
+    "days": 7
+  },
   "notify": {
     "webhook": {
       "url": "https://hooks.slack.com/services/YOUR/WEBHOOK/URL"

@@ -45,8 +45,9 @@ some context:
   leak source. Each source picks the kinds it can search (`check --list-sources`).
   A match means that canary (and therefore its `seed_tag` location) leaked.
   Context fields such as `table`, `locale` or `azure_tenant_id` are never searched.
-- **Inbox detection** (mail catch-all): when mail arrives for a canary address,
-  match the local-part's token against `record_id` to find the `seed_tag`.
+- **Inbox detection** (mail catch-all, `stille-hunter inbox`): when mail arrives
+  for a canary address, match the address (or the local-part's token against
+  `record_id`) to find the `seed_tag`. See [inbox.md](inbox.md).
 
 By default `check` only searches `detect: search` rows; pass `--include-inbox`
 to also search the self-domain ones.

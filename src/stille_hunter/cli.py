@@ -16,6 +16,7 @@ stille-hunter <command> [options]
 commands:
   generate   Generate leak-canary user records to seed into your data.
   check      Check a canary ledger against leak sources.
+  inbox      Match mail received on your catch-all against the ledger.
 
 Run 'stille-hunter <command> --help' for command options.
 """
@@ -37,6 +38,9 @@ def main(argv=None):
     elif cmd == "check":
         from .check import main as check_main
         check_main(rest)
+    elif cmd == "inbox":
+        from .inbox import main as inbox_main
+        inbox_main(rest)
     else:
         sys.stderr.write(f"unknown command: {cmd}\n\n{_USAGE}")
         sys.exit(2)
