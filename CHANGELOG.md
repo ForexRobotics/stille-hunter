@@ -9,6 +9,12 @@ While the version is `0.x`, minor bumps may include breaking changes; see
 
 ## [Unreleased]
 
+### Added
+- German locale for `member` and `db_dump` records: `--locale de` (#14).
+  German names (spelled out in ASCII for email and user id: ü -> ue,
+  ß -> ss), street addresses with a postcode that fits the city, German mobile
+  numbers and a German mail-domain mix; `db_dump` notes are in German.
+
 ## [0.4.0] - 2026-11-18
 
 ### Added

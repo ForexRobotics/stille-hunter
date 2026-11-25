@@ -122,6 +122,47 @@ _CA_CITIES = [
 _CA_STREETS = ["Main St", "King St", "Queen St", "Bay St", "Yonge St",
                "Maple Ave", "Oak St", "Cedar Rd", "Lakeshore Blvd"]
 
+# --- Germany ----------------------------------------------------------------
+# (display form, ASCII form for email / user id). Umlauts and ß are spelled out
+# the way Germans do in addresses (ä->ae, ö->oe, ü->ue, ß->ss).
+_DE_FIRST = [
+    ("Lukas", "lukas"), ("Leon", "leon"), ("Finn", "finn"), ("Jonas", "jonas"),
+    ("Paul", "paul"), ("Felix", "felix"), ("Maximilian", "maximilian"),
+    ("Tobias", "tobias"), ("Stefan", "stefan"), ("Thomas", "thomas"),
+    ("Michael", "michael"), ("Andreas", "andreas"), ("Jürgen", "juergen"),
+    ("Sebastian", "sebastian"), ("Florian", "florian"), ("Niklas", "niklas"),
+    ("Mia", "mia"), ("Emma", "emma"), ("Hannah", "hannah"), ("Sophia", "sophia"),
+    ("Lena", "lena"), ("Anna", "anna"), ("Laura", "laura"), ("Julia", "julia"),
+    ("Katrin", "katrin"), ("Sabine", "sabine"), ("Claudia", "claudia"),
+    ("Jana", "jana"), ("Lea", "lea"), ("Marie", "marie"), ("Sarah", "sarah"),
+    ("Jörg", "joerg"),
+]
+_DE_LAST = [
+    ("Müller", "mueller"), ("Schmidt", "schmidt"), ("Schneider", "schneider"),
+    ("Fischer", "fischer"), ("Weber", "weber"), ("Meyer", "meyer"),
+    ("Wagner", "wagner"), ("Becker", "becker"), ("Schulz", "schulz"),
+    ("Hoffmann", "hoffmann"), ("Schäfer", "schaefer"), ("Koch", "koch"),
+    ("Bauer", "bauer"), ("Richter", "richter"), ("Klein", "klein"),
+    ("Wolf", "wolf"), ("Schröder", "schroeder"), ("Neumann", "neumann"),
+    ("Schwarz", "schwarz"), ("Zimmermann", "zimmermann"), ("Braun", "braun"),
+    ("Krüger", "krueger"), ("Hofmann", "hofmann"), ("Hartmann", "hartmann"),
+    ("Lange", "lange"), ("Schmitt", "schmitt"), ("Werner", "werner"),
+    ("Krause", "krause"), ("Meier", "meier"), ("Lehmann", "lehmann"),
+    ("Groß", "gross"), ("Köhler", "koehler"),
+]
+# (city, [first two digits of its postcodes]) so the PLZ fits the city.
+_DE_CITIES = [
+    ("Berlin", ["10", "12", "13"]), ("Hamburg", ["20", "21", "22"]),
+    ("München", ["80", "81"]), ("Köln", ["50", "51"]),
+    ("Frankfurt am Main", ["60"]), ("Stuttgart", ["70"]),
+    ("Düsseldorf", ["40"]), ("Leipzig", ["04"]), ("Dortmund", ["44"]),
+    ("Essen", ["45"]), ("Bremen", ["28"]), ("Dresden", ["01"]),
+    ("Hannover", ["30"]), ("Nürnberg", ["90"]),
+]
+_DE_STREETS = ["Hauptstraße", "Bahnhofstraße", "Schulstraße", "Gartenstraße",
+               "Dorfstraße", "Bergstraße", "Lindenstraße", "Kirchstraße",
+               "Goethestraße", "Schillerstraße", "Am Markt", "Waldweg"]
+
 _RANKS = ["bronze", "silver", "gold", "platinum"]
 _RANK_WEIGHTS = [50, 30, 15, 5]
 _STATUS = ["active", "active", "active", "suspended", "dormant"]
@@ -147,6 +188,11 @@ _FREEMAIL_CA = [
     ("gmail.com", 44), ("yahoo.ca", 12), ("icloud.com", 12),
     ("outlook.com", 8), ("hotmail.com", 8), ("hotmail.ca", 4),
     ("live.ca", 3), ("shaw.ca", 3), ("rogers.com", 3), ("bell.net", 3),
+]
+_FREEMAIL_DE = [
+    ("gmail.com", 30), ("web.de", 18), ("gmx.de", 16), ("gmx.net", 6),
+    ("t-online.de", 10), ("outlook.de", 4), ("hotmail.de", 3),
+    ("yahoo.de", 4), ("icloud.com", 5), ("freenet.de", 2), ("posteo.de", 2),
 ]
 
 
@@ -189,6 +235,16 @@ def _ca_address():
           f"{secrets.randbelow(10)}{secrets.choice(letters)}{secrets.randbelow(10)}")
     return f"{num} {secrets.choice(_CA_STREETS)}, {city}, {prov} {pc}"
 
+def _de_name():
+    first, rfirst = secrets.choice(_DE_FIRST)
+    last, rlast = secrets.choice(_DE_LAST)
+    return f"{first} {last}", rfirst, rlast
+
+def _de_address():
+    city, prefixes = secrets.choice(_DE_CITIES)
+    plz = f"{secrets.choice(prefixes)}{secrets.randbelow(1000):03d}"
+    return f"{secrets.choice(_DE_STREETS)} {secrets.randbelow(150)+1}, {plz} {city}"
+
 def _jp_phone():
     return f"080-{secrets.randbelow(9000)+1000}-{secrets.randbelow(9000)+1000}"
 
@@ -208,6 +264,13 @@ def _gb_phone():
 def _ca_phone():
     return _nanp_phone()
 
+def _de_phone():
+    """German mobile: +49 15x / 16x / 17x and a 7-8 digit subscriber number."""
+    prefix = secrets.choice(["151", "152", "157", "160", "162", "170", "171",
+                             "172", "175", "176", "177", "179"])
+    digits = 8 if prefix.startswith("15") else 7
+    return f"+49 {prefix} {secrets.randbelow(9 * 10**(digits-1)) + 10**(digits-1)}"
+
 
 @dataclass
 class LocaleProfile:
@@ -223,6 +286,7 @@ _LOCALES = {
     "us": LocaleProfile("us", _en_name, _us_address, _us_phone, _FREEMAIL_US),
     "gb": LocaleProfile("gb", _en_name, _gb_address, _gb_phone, _FREEMAIL_GB),
     "ca": LocaleProfile("ca", _en_name, _ca_address, _ca_phone, _FREEMAIL_CA),
+    "de": LocaleProfile("de", _de_name, _de_address, _de_phone, _FREEMAIL_DE),
 }
 
 # ============================================================================
