@@ -181,6 +181,16 @@ source fails so the check is not silently broken. A clean run sends nothing.
 stille-hunter check --notify-test --config ~/.stille/config.json   # try it
 ```
 
+Add `--history ~/.stille/history.jsonl` and each run appends one line (no
+canary values). `stille-hunter history` summarises it - runs and failures per
+source, hits per seed tag and source, and per canary when it was first and
+last seen, so a new leak stands out from one that is still visible from
+before:
+
+```bash
+stille-hunter history ~/.stille/history.jsonl --days 30          # or --json
+```
+
 Run `check` daily from cron, Windows Task Scheduler or a private GitHub
 Actions workflow: see [Running check unattended](https://github.com/ForexRobotics/stille-hunter/blob/main/docs/unattended.md).
 

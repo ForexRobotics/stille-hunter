@@ -9,6 +9,16 @@ While the version is `0.x`, minor bumps may include breaking changes; see
 
 ## [Unreleased]
 
+### Added
+- Hit history across runs (#16). `check --history PATH` (and `inbox
+  --history PATH`) appends one JSON line per run - when, version, ledgers,
+  each source's outcome, and the hits (canary, marker kind, source, where,
+  when) - built from the run report and, like it, **without canary values**;
+  the file is created mode 0600. `stille-hunter history PATH [--days N]
+  [--json]` summarises it: runs and failures per source, hits per seed tag
+  and per source, and per canary its first and last sighting and whether it
+  is new in the period.
+
 ## [0.5.1] - 2026-11-25
 
 ### Added
