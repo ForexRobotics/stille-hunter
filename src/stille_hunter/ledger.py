@@ -165,8 +165,8 @@ def rotation_plan(rows: list[dict], tag: str, gen_opts: list[str]) -> list[str]:
     """generate options for a replacement batch of `tag` (without --out/--ledger-out).
 
     Same type and number of active canaries; carries over the locale, the inbox
-    domain and the table when the old batch had one and gen_opts does not say
-    otherwise."""
+    domain and its share of the batch, and the table when the old batch had
+    them and gen_opts does not say otherwise."""
     active = [r for r in rows if r.get("seed_tag") == tag and not is_retired(r)]
     if not active:
         raise ValueError(f"no active canaries with seed tag '{tag}'")
@@ -189,6 +189,8 @@ def rotation_plan(rows: list[dict], tag: str, gen_opts: list[str]) -> list[str]:
                       if r.get("detect") == "inbox" and "@" in r.get("email", ""))
     if kind == "member" and domains and not _has(gen_opts, "--self-domain"):
         argv += ["--self-domain", domains.most_common(1)[0][0]]
+        if not _has(gen_opts, "--self-ratio"):
+            argv += ["--self-ratio", f"{sum(domains.values()) / len(active):.2f}"]
     tables = {r.get("table") for r in active if r.get("table")}
     if len(tables) == 1 and not _has(gen_opts, "--table"):
         argv += ["--table", tables.pop()]
