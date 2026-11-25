@@ -9,7 +9,20 @@ While the version is `0.x`, minor bumps may include breaking changes; see
 
 ## [Unreleased]
 
-## [0.5.0] - 2026-11-25
+### Added
+- German locale for `member` and `db_dump` records: `--locale de` (#14).
+  German names (spelled out in ASCII for email and user id: ü -> ue,
+  ß -> ss), street addresses with a postcode that fits the city, German mobile
+  numbers and a German mail-domain mix; `db_dump` notes are in German.
+
+## [0.5.0] - 2026-11-25 [YANKED]
+
+Tagged before its planned features were merged: no code changes from
+0.4.0, only the README FAQ below. Yanked from PyPI; use 0.5.1.
+
+### Added
+- README: an FAQ drawing the line between what stille-hunter finds and
+  what it does not (#32).
 
 ## [0.4.0] - 2026-11-18
 

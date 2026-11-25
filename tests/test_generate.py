@@ -70,6 +70,36 @@ def test_member_ca_postal_matches_province():
         assert postal[0] == city_letter[city], f"{postal} wrong for {city}"
 
 
+def test_member_de_postcode_matches_city():
+    allowed = {c: set(p) for c, p in member_mod._DE_CITIES}
+    for rec in _make("member", locale="de", count=200):
+        # "<Straße> <Nr>, <PLZ> <Stadt>"
+        plz, city = rec["address"].rsplit(",", 1)[-1].strip().split(" ", 1)
+        assert len(plz) == 5 and plz.isdigit(), plz
+        assert plz[:2] in allowed[city], f"{plz} not valid for {city}"
+
+
+def test_member_de_markers_are_ascii_and_phone_is_german():
+    for rec in _make("member", locale="de", count=200):
+        assert rec["locale"] == "de"
+        local = rec["email"].split("@", 1)[0]
+        assert local.isascii() and rec["user_id"].isascii()     # ü -> ue, ß -> ss
+        assert rec["record_id"] in local
+        assert rec["phone"].startswith("+49 1")
+        digits = rec["phone"].replace("+49 ", "").replace(" ", "")
+        assert digits.isdigit() and 10 <= len(digits) <= 11
+    domains = {r["email"].split("@", 1)[1] for r in _make("member", locale="de", count=300)}
+    assert domains & {"web.de", "gmx.de", "t-online.de"}     # a German mix, not a US one
+
+
+def test_db_dump_de_notes_are_german():
+    from stille_hunter.types import db_dump
+    for rec in _make("db_dump", locale="de", count=30):
+        ref = rec["_ledger"]["marker"]
+        assert rec["_ledger"]["locale"] == "de"
+        assert rec["note"] in {t.format(ref=ref) for t in db_dump._NOTES_DE}
+
+
 def test_member_detect_flag_split():
     recs = _make("member", locale="jp", count=200,
                  self_domain="alerts.acme-corp.jp", self_ratio=0.5)

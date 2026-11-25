@@ -48,6 +48,17 @@ _NOTES_JA = [
 ]
 
 
+_NOTES_DE = [
+    "Aus dem alten CRM übernommen ({ref}).",
+    "Kunde bat um eine Kopie der letzten Rechnung. Ref. {ref}.",
+    "Supportfall {ref} nach Rückruf geschlossen.",
+    "Adresse telefonisch geändert, siehe {ref}.",
+    "Doppeltes Konto zusammengeführt in {ref}.",
+    "Erstattung veranlasst, Referenz {ref}.",
+]
+_NOTES = {"jp": _NOTES_JA, "de": _NOTES_DE}
+
+
 def _ref_code(token: str) -> str:
     return f"{secrets.choice(_PREFIXES)}-{token.upper()}{secrets.randbelow(10000):04d}"
 
@@ -63,7 +74,7 @@ class DbDumpType(CanaryType):
 
     def generate(self, args, count: int) -> Iterable[dict]:
         prof = _LOCALES[args.locale]
-        notes = _NOTES_JA if prof.code == "jp" else _NOTES_EN
+        notes = _NOTES.get(prof.code, _NOTES_EN)
         for _ in range(count):
             yield self._one(prof, notes)
 
