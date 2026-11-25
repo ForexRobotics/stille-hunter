@@ -18,6 +18,7 @@ commands:
   check      Check a canary ledger against leak sources.
   inbox      Match mail received on your catch-all against the ledger.
   history    Summarise the history written by `check --history`.
+  ledger     Manage ledgers: list, retire and rotate canaries.
 
 Run 'stille-hunter <command> --help' for command options.
 """
@@ -45,6 +46,9 @@ def main(argv=None):
     elif cmd == "history":
         from .history import main as history_main
         history_main(rest)
+    elif cmd == "ledger":
+        from .ledger import main as ledger_main
+        ledger_main(rest)
     else:
         sys.stderr.write(f"unknown command: {cmd}\n\n{_USAGE}")
         sys.exit(2)

@@ -162,6 +162,8 @@ def register(cls: type[CheckSource]) -> type[CheckSource]:
 #  Ledger loading
 # ---------------------------------------------------------------------------
 def load_ledger(path: str, include_inbox: bool) -> list[Canary]:
+    """Active canaries of a ledger. Rows stamped `retired_at` (see
+    `stille-hunter ledger retire`) are skipped."""
     canaries: list[Canary] = []
     is_csv = path.endswith(".csv")
     with open(path, encoding="utf-8", newline="") as f:
@@ -173,9 +175,13 @@ def load_ledger(path: str, include_inbox: bool) -> list[Canary]:
             rows = (json.loads(line) for line in f if line.strip())
         # ledger keys the frame handles itself; everything else is a
         # type-specific marker and goes into Canary.extra.
+        # Bookkeeping fields (type, table, retirement) are context, never markers.
         known = {"record_id", "seed_tag", "detect", "locale", "email",
-                 "user_id", "password_hash", "created_at"}
+                 "user_id", "password_hash", "created_at", "type", "table",
+                 "retired_at", "retired_reason"}
         for r in rows:
+            if r.get("retired_at"):
+                continue
             detect = r.get("detect", "search")
             if detect == "inbox" and not include_inbox:
                 continue

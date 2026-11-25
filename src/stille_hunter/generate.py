@@ -135,12 +135,15 @@ def _seeded_view(rec: dict) -> dict:
     return {k: v for k, v in rec.items() if not k.startswith("_")}
 
 
-def _ledger_row(rec: dict, seed_tag: str, table: str | None = None) -> dict:
+def _ledger_row(rec: dict, seed_tag: str, table: str | None = None,
+                type_name: str = "") -> dict:
     row = {
         "record_id": rec["record_id"],
         "seed_tag": seed_tag,
         "detect": rec.get("_detect", "search"),
     }
+    if type_name:
+        row["type"] = type_name   # which CanaryType made it (used by `ledger rotate`)
     # the type's declared searchable markers
     row.update(rec.get("_ledger", {}))
     if table:
@@ -237,7 +240,7 @@ def main(argv=None):
     except ValueError as e:
         sys.stderr.write(f"ERROR: {e}\n")
         sys.exit(2)
-    ledger = [_ledger_row(r, args.tag, table) for r in recs]
+    ledger = [_ledger_row(r, args.tag, table, known.type) for r in recs]
 
     seeded_ext, ledger_ext = FORMATS[args.format]
     seeded_path = f"{args.out}.{seeded_ext}"

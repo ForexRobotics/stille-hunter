@@ -191,6 +191,16 @@ before:
 stille-hunter history ~/.stille/history.jsonl --days 30          # or --json
 ```
 
+Over time, manage what you planted with `stille-hunter ledger`: `list` shows
+the canaries per seed tag (counts, never values), `retire` stops checking a
+batch you removed, and `rotate` generates a fresh batch for a seed tag and
+retires the old one:
+
+```bash
+stille-hunter ledger list   ~/.stille/ledgers/*.ledger.jsonl
+stille-hunter ledger rotate ~/.stille/ledgers/www.ledger.jsonl --tag www-members --out new_canaries
+```
+
 Run `check` daily from cron, Windows Task Scheduler or a private GitHub
 Actions workflow: see [Running check unattended](https://github.com/ForexRobotics/stille-hunter/blob/main/docs/unattended.md).
 
