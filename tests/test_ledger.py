@@ -77,8 +77,10 @@ def test_list_shows_counts_never_values(tmp_path, capsys):
 
 
 def test_rotate_replaces_a_batch_and_keeps_its_settings(tmp_path, capsys):
+    # all on the inbox domain, so the carried-over share is 1.00 and the test is
+    # not left to chance
     path = _generate(tmp_path, "--count", "6", "--tag", "www-members", "--locale", "de",
-                     "--self-domain", DOMAIN, "--self-ratio", "0.5", "--table", "members")
+                     "--self-domain", DOMAIN, "--self-ratio", "1", "--table", "members")
     old_ids = {r["record_id"] for r in ledger.read_rows(path)}
     out = tmp_path / "new_seed"
     assert _run(["ledger", "rotate", path, "--tag", "www-members", "--out", str(out)]) == 0
@@ -89,12 +91,21 @@ def test_rotate_replaces_a_batch_and_keeps_its_settings(tmp_path, capsys):
     assert len(new) == 6 and not any(r.get("retired_at") for r in new)
     assert {r["locale"] for r in new} == {"de"} and {r["table"] for r in new} == {"members"}
     assert {r["seed_tag"] for r in new} == {"www-members"}
-    inbox = [r for r in new if r["detect"] == "inbox"]
-    assert inbox and all(r["email"].endswith("@" + DOMAIN) for r in inbox)
+    assert all(r["detect"] == "inbox" and r["email"].endswith("@" + DOMAIN) for r in new)
     assert (tmp_path / "new_seed.jsonl").exists()
     assert {c.record_id for c in load_ledger(path, include_inbox=True)} == \
         {r["record_id"] for r in new}
     assert stat.S_IMODE(os.stat(path).st_mode) == 0o600
+
+
+def test_rotate_carries_over_the_inbox_share():
+    rows = [{"record_id": f"{i:06x}", "seed_tag": "t", "type": "member",
+             "detect": "inbox" if i < 3 else "search",
+             "email": f"a.b.{i:06x}@" + (DOMAIN if i < 3 else "gmail.com")} for i in range(10)]
+    plan = ledger.rotation_plan(rows, "t", [])
+    assert plan[plan.index("--self-domain") + 1] == DOMAIN
+    assert plan[plan.index("--self-ratio") + 1] == "0.30"
+    assert "--self-ratio" not in ledger.rotation_plan(rows, "t", ["--self-ratio", "0.9"])[:-2]
 
 
 def test_rotate_passes_generate_options_and_dry_run(tmp_path, capsys):

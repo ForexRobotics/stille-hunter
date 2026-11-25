@@ -66,7 +66,7 @@ file's permissions):
   `retired_at` so checks skip those canaries. `--dry-run` shows the count.
 - `ledger rotate LEDGER --tag TAG --out PATH [generate options]` - generate a
   replacement batch of the same type and size for the tag (carrying over its
-  locale, inbox domain and table unless told otherwise), append it to the
+  locale, inbox domain and its share, and table unless told otherwise), append it to the
   ledger, then retire the old batch. If generating fails, nothing is retired.
 
 ## Stability
