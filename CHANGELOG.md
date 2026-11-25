@@ -9,6 +9,8 @@ While the version is `0.x`, minor bumps may include breaking changes; see
 
 ## [Unreleased]
 
+## [0.5.1] - 2026-11-25
+
 ### Added
 - `stille-hunter inbox` (#12): match mail received on your catch-all against
   the ledger, from an mbox, a Maildir or an IMAP mailbox. Reads recipient
@@ -155,7 +157,8 @@ and search-only — it never touches anyone else's systems.
 - Apache-2.0 license; DCO sign-off contribution workflow (`DCO`,
   `CONTRIBUTING.md`); project overview and "human-directed, AI-built" diagrams.
 
-[Unreleased]: https://github.com/ForexRobotics/stille-hunter/compare/v0.5.0...HEAD
+[Unreleased]: https://github.com/ForexRobotics/stille-hunter/compare/v0.5.1...HEAD
+[0.5.1]: https://github.com/ForexRobotics/stille-hunter/releases/tag/v0.5.1
 [0.5.0]: https://github.com/ForexRobotics/stille-hunter/releases/tag/v0.5.0
 [0.4.0]: https://github.com/ForexRobotics/stille-hunter/releases/tag/v0.4.0
 [0.3.0]: https://github.com/ForexRobotics/stille-hunter/releases/tag/v0.3.0
