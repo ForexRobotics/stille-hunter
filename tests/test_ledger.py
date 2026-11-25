@@ -19,6 +19,12 @@ def _run(argv):
     return e.value.code
 
 
+def _assert_owner_only(path):
+    """Ledgers keep mode 0600 - POSIX only: Windows has no such permission bits."""
+    if os.name == "posix":
+        assert stat.S_IMODE(os.stat(path).st_mode) == 0o600
+
+
 def _generate(tmp_path, *opts, name="www"):
     path = tmp_path / f"{name}.ledger.jsonl"
     main(["generate", "--out", str(tmp_path / f"{name}_seed"), "--ledger-out", str(path),
@@ -50,7 +56,7 @@ def test_retire_by_tag_and_id_and_check_skips_them(tmp_path, capsys):
     gone = [r for r in rows if r.get("retired_at")]
     assert [r["record_id"] for r in gone] == [other] and gone[0]["retired_reason"] == "test"
     assert len(load_ledger(path, include_inbox=True)) == 3        # check skips it
-    assert stat.S_IMODE(os.stat(path).st_mode) == 0o600            # permissions kept
+    _assert_owner_only(path)                                        # permissions kept
 
     assert _run(["ledger", "retire", path, "--tag", "www-members", "--dry-run"]) == 0
     assert "would retire 3" in capsys.readouterr().out
@@ -95,7 +101,7 @@ def test_rotate_replaces_a_batch_and_keeps_its_settings(tmp_path, capsys):
     assert (tmp_path / "new_seed.jsonl").exists()
     assert {c.record_id for c in load_ledger(path, include_inbox=True)} == \
         {r["record_id"] for r in new}
-    assert stat.S_IMODE(os.stat(path).st_mode) == 0o600
+    _assert_owner_only(path)
 
 
 def test_rotate_carries_over_the_inbox_share():
