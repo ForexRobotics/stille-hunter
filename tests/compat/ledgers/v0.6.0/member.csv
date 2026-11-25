@@ -1,0 +1,4 @@
+record_id,seed_tag,detect,type,locale,email,user_id,password_hash,table,created_at
+1eb8b1,compat-v0.6.0,search,member,jp,shota.maeda.1eb8b1@so-net.ne.jp,shotamaeda1eb8,ab0095f97b027b8acedbe236a1f518d4ef68b07b99961a256d1dd6ebfdcac708,members,2026-11-25T12:51:35.941609+00:00
+e49800,compat-v0.6.0,search,member,jp,aoi.yoshida.e49800@hotmail.com,yoshida_aoie498,ab39b1b1ba1c8d877d0512056de1247b8d64c3f1f3078bb56eb1d99a38d44777,members,2026-11-25T12:51:35.941614+00:00
+0f801d,compat-v0.6.0,search,member,jp,haruka.kondo.0f801d@gmail.com,kondo_haruka0f80,9aad1af327e6d6071de958560ecf32a2563f5ee940d37762b95585bce32c5cb3,members,2026-11-25T12:51:35.941616+00:00

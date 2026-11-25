@@ -71,6 +71,8 @@ file's permissions):
 
 ## Stability
 
-Field names and meanings are the contract. New fields may be added; existing
-ones will not change meaning without a version bump. Consumers should ignore
-unknown fields rather than fail on them.
+Field names and meanings are the contract. New fields may be added in a minor
+release; existing ones will not change meaning or disappear without a major
+release. Consumers should ignore unknown fields rather than fail on them.
+Every release reads ledgers written by 0.1.0 and later - CI loads real ledgers
+from each earlier release to keep it that way. See [stability.md](stability.md).
