@@ -10,6 +10,17 @@ While the version is `0.x`, minor bumps may include breaking changes; see
 ## [Unreleased]
 
 ### Added
+- Ledger management (#15): `stille-hunter ledger list` (canaries per seed tag:
+  active, retired, types, inbox count, table, dates - counts only, never
+  values), `ledger retire --tag/--id [--reason]` (stamps `retired_at`; `check`
+  and `inbox` skip retired canaries) and `ledger rotate --tag --out [generate
+  options]` (generates a replacement batch of the same type and size, keeping
+  its locale, inbox domain (and its share of the batch) and table,
+  appends it, then retires the old one;
+  nothing is retired if generating fails). Ledgers are rewritten atomically
+  and keep their permissions. `history --ledger` marks retired canaries.
+- Ledger rows record the canary `type`; older rows have it inferred from
+  their markers. New optional fields `retired_at` and `retired_reason`.
 - Hit history across runs (#16). `check --history PATH` (and `inbox
   --history PATH`) appends one JSON line per run - when, version, ledgers,
   each source's outcome, and the hits (canary, marker kind, source, where,
@@ -18,6 +29,12 @@ While the version is `0.x`, minor bumps may include breaking changes; see
   [--json]` summarises it: runs and failures per source, hits per seed tag
   and per source, and per canary its first and last sighting and whether it
   is new in the period.
+
+### Changed
+- `check` treats the ledger's bookkeeping fields (`type`, `table`,
+  `retired_at`, `retired_reason`) as context, never as searchable markers.
+  `table` was previously passed to sources as an extra marker (none searched
+  it).
 
 ## [0.5.1] - 2026-11-25
 

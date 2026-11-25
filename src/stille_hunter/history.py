@@ -226,6 +226,8 @@ def main(argv=None):
     p.add_argument("--days", type=int, default=30,
                    help="Period to summarise, in days (default 30; 0 = everything).")
     p.add_argument("--json", action="store_true", help="Print JSON instead of text.")
+    p.add_argument("--ledger", action="append", default=[], metavar="PATH",
+                   help="Ledger(s) to mark retired canaries from (repeatable).")
     args = p.parse_args(argv)
     if args.days < 0:
         p.error("--days must be 0 or more")
@@ -234,7 +236,15 @@ def main(argv=None):
     except FileNotFoundError:
         sys.stderr.write(f"ERROR: history not found: {args.path}\n")
         sys.exit(2)
-    summary = summarise(entries, days=args.days)
+    retired = set()
+    for path in args.ledger:
+        from .ledger import is_retired, read_rows
+        try:
+            retired |= {r.get("record_id") for r in read_rows(path) if is_retired(r)}
+        except FileNotFoundError:
+            sys.stderr.write(f"ERROR: ledger not found: {path}\n")
+            sys.exit(2)
+    summary = summarise(entries, days=args.days, retired=retired)
     if args.json:
         print(json.dumps(summary, ensure_ascii=False, indent=2))
     else:
