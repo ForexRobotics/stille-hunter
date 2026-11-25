@@ -204,6 +204,15 @@ stille-hunter ledger rotate ~/.stille/ledgers/www.ledger.jsonl --tag www-members
 Run `check` daily from cron, Windows Task Scheduler or a private GitHub
 Actions workflow: see [Running check unattended](https://github.com/ForexRobotics/stille-hunter/blob/main/docs/unattended.md).
 
+## Documentation
+
+- [User guide](https://github.com/ForexRobotics/stille-hunter/blob/main/docs/user-guide.md) - every command, option and config setting.
+- [Inbox detection](https://github.com/ForexRobotics/stille-hunter/blob/main/docs/inbox.md) - a catch-all for your canary addresses.
+- [Running check unattended](https://github.com/ForexRobotics/stille-hunter/blob/main/docs/unattended.md) - cron, Task Scheduler, GitHub Actions.
+- [Ledger format](https://github.com/ForexRobotics/stille-hunter/blob/main/docs/ledger-format.md) - the data contract between the commands.
+- [Plugin author guide](https://github.com/ForexRobotics/stille-hunter/blob/main/docs/plugin-guide.md) - writing canary types and check sources.
+- [Stability](https://github.com/ForexRobotics/stille-hunter/blob/main/docs/stability.md) - what the public API is and how it is versioned.
+
 ## Sources
 
 A source is a place a leaked canary might surface. Each is a small plugin
