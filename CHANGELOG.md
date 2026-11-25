@@ -10,6 +10,19 @@ While the version is `0.x`, minor bumps may include breaking changes; see
 ## [Unreleased]
 
 ### Added
+- `stille-hunter inbox` (#12): match mail received on your catch-all against
+  the ledger, from an mbox, a Maildir or an IMAP mailbox. Reads recipient
+  headers only (To, Cc, Delivered-To, X-Original-To, Envelope-To) plus Date
+  and From; IMAP is opened read-only and read with `BODY.PEEK`, so nothing is
+  fetched beyond headers or marked as read. Reports per canary: message count,
+  first and last date, sender domains. Prints, reports and notifies like
+  `check`; the mailbox can live under `"inbox"` in the config, and the IMAP
+  password can come from `STILLE_IMAP_PASSWORD`.
+- `inbox` check source: the same matching inside `check --sources ...,inbox
+  --include-inbox`.
+- Guide: setting up a catch-all for inbox detection - choosing the domain,
+  DNS (MX, plus SPF/DMARC so nobody can send as it), self-hosted Postfix and
+  hosted providers (#13): `docs/inbox.md`.
 - German locale for `member` and `db_dump` records: `--locale de` (#14).
   German names (spelled out in ASCII for email and user id: ü -> ue,
   ß -> ss), street addresses with a postcode that fits the city, German mobile

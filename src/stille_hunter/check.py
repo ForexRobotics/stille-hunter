@@ -373,9 +373,26 @@ def main(argv=None):
 
     if not args.ledger:
         p.error("a ledger path is required (or use --list-sources / --notify-test)")
+    sys.exit(execute(args, source_config, fail=p.error))
+
+
+def execute(args, source_config: dict, *, fail=None) -> int:
+    """Run a check and do everything after it: print, --out, --report, notify.
+
+    Shared by `check` and `inbox`. `args` needs: ledger (list of paths),
+    sources (comma-separated names), include_inbox, out, report (list),
+    report_title and no_notify. Returns the exit code: 1 when something was
+    found, else 0."""
+    def _fail(msg):
+        if fail is not None:
+            fail(msg)
+        sys.stderr.write(f"ERROR: {msg}\n")
+        sys.exit(2)
+
+    notify_cfg = source_config.get("notify") or {}
     for path in args.report:
         if report.report_format(path) is None:
-            p.error(f"--report path must end in .html or .json: {path}")
+            _fail(f"--report path must end in .html or .json: {path}")
 
     canaries = []
     for path in args.ledger:
@@ -428,7 +445,7 @@ def main(argv=None):
             print(f"  notified via {', '.join(notify.channels(notify_cfg))}")
 
     # non-zero exit when something leaked, so cron/CI can alert on it
-    sys.exit(1 if hits else 0)
+    return 1 if hits else 0
 
 
 if __name__ == "__main__":

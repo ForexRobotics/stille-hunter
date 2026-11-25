@@ -155,6 +155,22 @@ canaries were checked, by seed tag and marker. The JSON holds the same for
 scripts or an AI triage. Reports never contain canary values, but seed tags
 say where canaries are planted, so keep them private (written mode 0600).
 
+### 2b. Catch mail to your own domain
+
+Canaries on your `--self-domain` are caught faster by mail than by search: set
+a catch-all on that domain, and `inbox` matches the mail it receives against
+the ledger. It reads recipient headers only - message contents are never
+fetched or kept - from an mbox, a Maildir or an IMAP mailbox (read-only).
+
+```bash
+stille-hunter inbox ~/.stille/ledgers/*.ledger.jsonl --maildir /home/canary/Maildir --days 30
+stille-hunter inbox ~/.stille/ledgers/*.ledger.jsonl --config ~/.stille/config.json
+```
+
+It prints, reports and notifies like `check`. Setting up the domain and the
+catch-all (DNS, a self-hosted Postfix or a hosted provider): see
+[Inbox detection](https://github.com/ForexRobotics/stille-hunter/blob/main/docs/inbox.md).
+
 ### 3. Get told when one surfaces
 
 Add a `notify` section to the config - a Slack, Discord or any HTTPS webhook,
@@ -179,6 +195,7 @@ implementing the `CheckSource` contract; add one by dropping a module in
 | `null` | — | nothing (reference stub) |
 | `hibp` | HIBP API key | canary emails in known breaches |
 | `github` | GitHub token | canary secrets (keys, tokens, hashes) in public code |
+| `inbox` | a catch-all mailbox you own | mail sent to your inbox canaries (needs `--include-inbox`; or use `stille-hunter inbox`) |
 
 Proprietary sources (dark-web crawl, commercial threat feeds) ship separately
 and register through the same contract.
