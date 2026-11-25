@@ -35,7 +35,8 @@ While the version is `0.x`, minor bumps may include breaking changes; see
   values), `ledger retire --tag/--id [--reason]` (stamps `retired_at`; `check`
   and `inbox` skip retired canaries) and `ledger rotate --tag --out [generate
   options]` (generates a replacement batch of the same type and size, keeping
-  its locale, inbox domain and table, appends it, then retires the old one;
+  its locale, inbox domain (and its share of the batch) and table,
+  appends it, then retires the old one;
   nothing is retired if generating fails). Ledgers are rewritten atomically
   and keep their permissions. `history --ledger` marks retired canaries.
 - Ledger rows record the canary `type`; older rows have it inferred from
