@@ -9,6 +9,8 @@ While the version is `0.x`, minor bumps may include breaking changes; see
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-11-25
+
 ### Added
 - Documentation (#19): a user guide (`docs/user-guide.md`) covering every
   command, option, source, notification setting and config section, and a
@@ -216,7 +218,8 @@ and search-only — it never touches anyone else's systems.
 - Apache-2.0 license; DCO sign-off contribution workflow (`DCO`,
   `CONTRIBUTING.md`); project overview and "human-directed, AI-built" diagrams.
 
-[Unreleased]: https://github.com/ForexRobotics/stille-hunter/compare/v0.6.0...HEAD
+[Unreleased]: https://github.com/ForexRobotics/stille-hunter/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/ForexRobotics/stille-hunter/releases/tag/v1.0.0
 [0.6.0]: https://github.com/ForexRobotics/stille-hunter/releases/tag/v0.6.0
 [0.5.1]: https://github.com/ForexRobotics/stille-hunter/releases/tag/v0.5.1
 [0.5.0]: https://github.com/ForexRobotics/stille-hunter/releases/tag/v0.5.0
