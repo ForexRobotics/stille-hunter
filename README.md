@@ -47,7 +47,7 @@ This writes two files:
   token to where you planted it. See [docs/ledger-format.md](https://github.com/ForexRobotics/stille-hunter/blob/main/docs/ledger-format.md).
 
 Records look like real members: locale-consistent names, addresses, phones and
-email domains (`--locale jp|us|gb|ca|de`), test-BIN card numbers that can never be
+email domains (`--locale jp|us|gb|ca|de|tw`, `zh-TW` = `tw`), test-BIN card numbers that can never be
 charged, and no CVV or national IDs. Every record is an adult and carries a
 unique token woven through its email, user id and password hash.
 

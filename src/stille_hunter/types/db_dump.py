@@ -26,7 +26,7 @@ from datetime import datetime, timedelta
 from typing import Iterable
 
 from ..generate import CanaryType, new_token, register_type, weighted_choice
-from .member import _LOCALES
+from .member import locale_choices, resolve_locale
 
 _PREFIXES = ["CUS", "ACC", "MEM", "REF", "TKT"]
 
@@ -56,7 +56,15 @@ _NOTES_DE = [
     "Doppeltes Konto zusammengeführt in {ref}.",
     "Erstattung veranlasst, Referenz {ref}.",
 ]
-_NOTES = {"jp": _NOTES_JA, "de": _NOTES_DE}
+_NOTES_TW = [
+    "由舊系統移轉（{ref}）",
+    "客戶要求補寄最近一期帳單。參考編號 {ref}",
+    "客服案件 {ref} 已於回電後結案",
+    "電話受理地址變更（{ref}）",
+    "重複帳號已合併至 {ref}",
+    "已完成退款，管理編號 {ref}",
+]
+_NOTES = {"jp": _NOTES_JA, "de": _NOTES_DE, "tw": _NOTES_TW}
 
 
 def _ref_code(token: str) -> str:
@@ -69,11 +77,11 @@ class DbDumpType(CanaryType):
     description = "Plausible table rows with a searchable reference code, for DB planting."
 
     def add_arguments(self, p: argparse.ArgumentParser) -> None:
-        p.add_argument("--locale", default="jp", choices=sorted(_LOCALES),
+        p.add_argument("--locale", default="jp", choices=locale_choices(),
                        help="Locale for names, phones and email domains (default: jp).")
 
     def generate(self, args, count: int) -> Iterable[dict]:
-        prof = _LOCALES[args.locale]
+        prof = resolve_locale(args.locale)
         notes = _NOTES.get(prof.code, _NOTES_EN)
         for _ in range(count):
             yield self._one(prof, notes)
