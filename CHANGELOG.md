@@ -48,6 +48,16 @@ While the version is `0.x`, minor bumps may include breaking changes; see
   [--json]` summarises it: runs and failures per source, hits per seed tag
   and per source, and per canary its first and last sighting and whether it
   is new in the period.
+
+### Changed
+- `check` treats the ledger's bookkeeping fields (`type`, `table`,
+  `retired_at`, `retired_reason`) as context, never as searchable markers.
+  `table` was previously passed to sources as an extra marker (none searched
+  it).
+
+## [0.5.1] - 2026-11-25
+
+### Added
 - `stille-hunter inbox` (#12): match mail received on your catch-all against
   the ledger, from an mbox, a Maildir or an IMAP mailbox. Reads recipient
   headers only (To, Cc, Delivered-To, X-Original-To, Envelope-To) plus Date
@@ -65,12 +75,6 @@ While the version is `0.x`, minor bumps may include breaking changes; see
   German names (spelled out in ASCII for email and user id: ü -> ue,
   ß -> ss), street addresses with a postcode that fits the city, German mobile
   numbers and a German mail-domain mix; `db_dump` notes are in German.
-
-### Changed
-- `check` treats the ledger's bookkeeping fields (`type`, `table`,
-  `retired_at`, `retired_reason`) as context, never as searchable markers.
-  `table` was previously passed to sources as an extra marker (none searched
-  it).
 
 ## [0.5.0] - 2026-11-25 [YANKED]
 
@@ -199,7 +203,8 @@ and search-only — it never touches anyone else's systems.
 - Apache-2.0 license; DCO sign-off contribution workflow (`DCO`,
   `CONTRIBUTING.md`); project overview and "human-directed, AI-built" diagrams.
 
-[Unreleased]: https://github.com/ForexRobotics/stille-hunter/compare/v0.5.0...HEAD
+[Unreleased]: https://github.com/ForexRobotics/stille-hunter/compare/v0.5.1...HEAD
+[0.5.1]: https://github.com/ForexRobotics/stille-hunter/releases/tag/v0.5.1
 [0.5.0]: https://github.com/ForexRobotics/stille-hunter/releases/tag/v0.5.0
 [0.4.0]: https://github.com/ForexRobotics/stille-hunter/releases/tag/v0.4.0
 [0.3.0]: https://github.com/ForexRobotics/stille-hunter/releases/tag/v0.3.0
